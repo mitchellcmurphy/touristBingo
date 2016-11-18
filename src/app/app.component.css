@@ -1,8 +1,18 @@
 html, body{
-  height: 100%;
-  font-family: Arial, Helvetica, sans-serif
+  min-height: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0 0 100px;
 }
 
 span.active {
   background-color: gray;
+}
+
+footer{
+  background-color: orange;
+  left: 0;
+  bottom: 0;
+  height: 100px;
+  width: 100%;
+  overflow:hidden;
 }

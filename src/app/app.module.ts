@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 import { removeNgStyles, createNewHosts, createInputTransfer } from '@angularclass/hmr';
+import { AngularFireModule } from 'angularfire2';
 
 /*
  * Platform and Environment providers/directives/pipes
@@ -32,6 +33,15 @@ type StoreType = {
   disposeOldHosts: () => void
 };
 
+//Firebase
+export const firebaseConfig = {
+  apiKey: "AIzaSyCzG1IQAkNJLr8hXcqgStltB897BMs_jK8",
+  authDomain: "touristbingo-2a6b3.firebaseapp.com",
+  databaseURL: "https://touristbingo-2a6b3.firebaseio.com",
+  storageBucket: "touristbingo-2a6b3.appspot.com",
+  messagingSenderId: "889266554830"
+};
+
 /**
  * `AppModule` is the main entry point into Angular2's bootstraping process
  */
@@ -49,7 +59,8 @@ type StoreType = {
     BrowserModule,
     FormsModule,
     HttpModule,
-    RouterModule.forRoot(ROUTES, { useHash: true })
+    RouterModule.forRoot(ROUTES, { useHash: true }),
+    AngularFireModule.initializeApp(firebaseConfig)
   ],
   providers: [ // expose our Services and Providers into Angular's dependency injection
     ENV_PROVIDERS,

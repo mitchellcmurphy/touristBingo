@@ -1,6 +1,32 @@
 <div class="squares-card-container">
     <h1>Squares</h1>
-    <div id="blue">
-        I sure do love me some hot chowda
+
+    <!--<ul>
+        <li class="text" *ngFor="let item of items | async">
+            {{item.name}}
+        </li>
+    </ul>-->
+
+    <div>
+        <span>Enter a name: </span>
+        <input type="text" name="Name" #nameVal (keyup)="doneTyping($event)">
+        <button (click)="addToCart(nameVal)">Enter</button>
     </div>
+
+    <div *ngFor="let item of items | async">  
+        <div class="square">
+            <div class="content">
+                <div class="bingo-table">
+                    <div class="bingo-table-cell">
+                        <span class="delete-cell" (click)="deleteCell(item.$key)">x</span>
+                        <input type="file" name="file" id="{{ item.$key }}" class="inputfile" (change)="uploadPicture($event, item.$key)"/>
+                        <label *ngIf="!item.fileUrl" [attr.for]="item.$key">{{item.name}}</label>
+                        <img *ngIf="item.fileUrl" src="{{item.fileUrl}}" class="cell-img">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br>
 </div>

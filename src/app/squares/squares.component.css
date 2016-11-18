@@ -1,3 +1,57 @@
 #blue {
   color: blue;
 }
+
+.square {
+    float:left;
+    position: relative;
+    width: 30%;
+    padding-bottom : 30%; /* = width for a 1:1 aspect ratio */
+    margin:1.66%;
+    overflow:hidden;
+}
+
+.content {
+    position:absolute;
+    height:80%; /* = 100% - 2*10% padding */
+    width:90%; /* = 100% - 2*5% padding */
+    padding: 10% 5%;
+    border: black 1px solid;
+}
+
+.bingo-table{
+    display:table;
+    height:100%;
+    width:100%;
+}
+
+.bingo-table-cell{
+    display:table-cell;
+    vertical-align:middle;
+    height:100%;
+    width:100%;
+    text-align: center;
+}
+
+.inputfile {
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+
+.delete-cell{
+  position: absolute;
+  top: 0;
+  right: 5px;
+  cursor: pointer;
+}
+
+.cell-img{
+  width:100%;
+  -ms-transform: rotate(90deg);
+  -webkit-transform: rotate(90deg); 
+  transform: rotate(90deg);
+}

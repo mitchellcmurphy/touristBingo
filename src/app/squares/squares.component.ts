@@ -18,17 +18,20 @@ console.log('`Squares` component loaded asynchronously');
 export class SquaresComponent {
   items: FirebaseListObservable<any[]>;
   localState: any;
-  boxes = [
-      {
-          title: 'title',
-          text: 'text'
-      }
-  ]
+  storageRef: any;
+
+  updateSquareWithData = (key: string, data: Object) => {
+    console.log("Updating", key, "With", data);
+    this.items.update(key, data).then(_ => console.log('update!'));
+    // window.location.reload(true);
+  }
+
   constructor(public route: ActivatedRoute, af: AngularFire) {
       this.items = af.database.list('/items');
   }
 
   ngOnInit() {
+    this.storageRef = firebase.storage().ref();
     this.route
       .data
       .subscribe((data: any) => {
@@ -37,5 +40,47 @@ export class SquaresComponent {
       });
 
     console.log('hello `Squares` component');
+  }
+
+  addToCart(person: HTMLInputElement) {
+    console.log('person=',person)
+    this.items.push({
+      name: person.value
+    });
+    person.value = null;
+  }
+
+  doneTyping($event) {
+    if($event.which === 13) {
+      this.items.push({
+        name: $event.target.value
+      });
+      $event.target.value = null;
+    }
+  }
+
+  uploadPicture($event, key: string) {
+    var files = $event.srcElement.files;
+    $event.stopPropagation();
+    $event.preventDefault();
+    var file = files[0];
+    var metadata = {
+      'contentType': file.type
+    };
+    firebase.storage().ref().child('images/' + file.name).put(file, metadata).then(snapshot => this.obtainUploadUrl(snapshot, key));
+  }
+
+  obtainUploadUrl(snapshot: any, key: string){
+    console.log('Uploaded', snapshot.totalBytes, 'bytes.');
+      console.log(snapshot.metadata);
+      var url = snapshot.metadata.downloadURLs[0];
+      console.log('File available at', url);
+      this.updateSquareWithData(key, {
+        fileUrl: url
+      });
+  }
+
+  deleteCell(key: string){
+    this.items.remove(key).then(_ => console.log('item deleted!'));
   }
 }
