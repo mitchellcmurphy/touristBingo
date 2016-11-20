@@ -49,8 +49,8 @@
             <div class="content">
                 <div class="bingo-table">
                     <div class="bingo-table-cell">
-                        <span class="delete-cell" (click)="deleteCell(item)">x</span>
-                        <input type="file" name="file" id="{{ item.$key }}" class="inputfile" (change)="uploadPicture($event, item.$key)"/>
+                        <!--<span class="delete-cell" (click)="deleteCell(item)">x</span>-->
+                        <input type="file" name="file" id="{{ item.$key }}" class="inputfile" (change)="uploadPicture($event, item)"/>
                         <label *ngIf="!item.fileUrl" [attr.for]="item.$key">{{item.name}}</label>
                         <img *ngIf="item.fileUrl" src="{{item.fileUrl}}" class="cell-img">
                     </div>

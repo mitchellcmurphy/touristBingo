@@ -25,6 +25,7 @@ export class SquaresComponent {
   af: AngularFire;
   currentGameName: string;
   selectedTopic: any;
+  uploadingBox: string;
 
   updateSquareWithData = (key: string, data: Object) => {
     console.log("Updating", key, "With", data);
@@ -76,7 +77,9 @@ export class SquaresComponent {
     }
   }
 
-  uploadPicture($event, key: string) {
+  uploadPicture($event, item: any) {
+    var key = item.$key;
+    this.uploadingBox = item.name;
     var files = $event.srcElement.files;
     $event.stopPropagation();
     $event.preventDefault();
@@ -90,13 +93,36 @@ export class SquaresComponent {
 
   obtainUploadUrl(snapshot: any, key: string, name: string){
     console.log('Uploaded', snapshot.totalBytes, 'bytes.');
-      console.log(snapshot.metadata);
-      var url = snapshot.metadata.downloadURLs[0];
-      console.log('File available at', url);
-      this.updateSquareWithData(key, {
-        fileUrl: url,
-        fileName: name
-      });
+    console.log(snapshot.metadata);
+    var url = snapshot.metadata.downloadURLs[0];
+    console.log('File available at', url);
+    this.updateSquareWithData(key, {
+      fileUrl: url,
+      fileName: name
+    });
+
+    //HACK TODO FIX THIS WITH DATABASE LATER
+    this.af.database.list('/games', { preserveSnapshot: true})
+    .subscribe(snapshots=>{
+        snapshots.forEach(snapshot => {
+          // console.log(snapshot.key, snapshot.val().items);
+          var gameKey = snapshot.key;
+          for(var i = 0; i < snapshot.val().items.length; i++){
+            // console.log(snapshot.val().items[i].name);
+            if(snapshot.val().items[i].name === this.uploadingBox){
+              this.af.database.list('/games/' + gameKey + '/items').update(String(i), {
+                fileUrl: url,
+                fileName: name
+              });
+              // console.log(snapshot.val().items[i], snapshot.val().items[i].name);
+            }
+          }
+        });
+    })
+    // for (var key in this.games) {
+    //   var obj = this.games[key];
+    //   console.log("BALLS", obj);
+    // }
   }
 
   deleteCell(item: any){
