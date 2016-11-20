@@ -34,17 +34,25 @@ import { AppState } from './app.service';
           Squares
         </a>
       </span>
+      |
+      <span>
+        <a [routerLink]=" ['./creation-tool'] ">
+          Creation Tool
+        </a>
+      </span>
     </nav>
 
     <main>
       <router-outlet></router-outlet>
     </main>
 
-    <footer>
+    <span defaultOverlayTarget></span>
+
+    <!--<footer>
       <div>
         Footer Stuffs
       </div>
-    </footer>
+    </footer>-->
   `
 })
 export class AppComponent {

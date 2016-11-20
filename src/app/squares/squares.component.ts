@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AngularFire, FirebaseListObservable } from 'angularfire2';
+import { UUID } from 'angular2-uuid';
 
 /*
  * We're loading this component asynchronously
@@ -17,17 +18,24 @@ console.log('`Squares` component loaded asynchronously');
 })
 export class SquaresComponent {
   items: FirebaseListObservable<any[]>;
+  games: FirebaseListObservable<any[]>;
+  topics: FirebaseListObservable<any[]>;
   localState: any;
   storageRef: any;
+  af: AngularFire;
+  currentGameName: string;
+  selectedTopic: any;
 
   updateSquareWithData = (key: string, data: Object) => {
     console.log("Updating", key, "With", data);
     this.items.update(key, data).then(_ => console.log('update!'));
-    // window.location.reload(true);
   }
 
   constructor(public route: ActivatedRoute, af: AngularFire) {
-      this.items = af.database.list('/items');
+      // this.items = af.database.list('/items');
+      this.af = af;
+      this.games = af.database.list('/games');
+      this.topics = af.database.list('/topics');
   }
 
   ngOnInit() {
@@ -42,18 +50,27 @@ export class SquaresComponent {
     console.log('hello `Squares` component');
   }
 
-  addToCart(person: HTMLInputElement) {
-    console.log('person=',person)
+  addToGame(box: HTMLInputElement) {
+    console.log('box=',box)
     this.items.push({
-      name: person.value
+      name: box.value
     });
-    person.value = null;
+    box.value = null;
   }
 
   doneTyping($event) {
     if($event.which === 13) {
       this.items.push({
         name: $event.target.value
+      });
+      $event.target.value = null;
+    }
+  }
+
+  doneTypingGame($event) {
+    if($event.which === 13) {
+      this.games.push({
+        gameName: $event.target.value
       });
       $event.target.value = null;
     }
@@ -67,20 +84,91 @@ export class SquaresComponent {
     var metadata = {
       'contentType': file.type
     };
-    firebase.storage().ref().child('images/' + file.name).put(file, metadata).then(snapshot => this.obtainUploadUrl(snapshot, key));
+    var filename = file.name + UUID.UUID();
+    firebase.storage().ref().child('images/' + filename).put(file, metadata).then(snapshot => this.obtainUploadUrl(snapshot, key, filename));
   }
 
-  obtainUploadUrl(snapshot: any, key: string){
+  obtainUploadUrl(snapshot: any, key: string, name: string){
     console.log('Uploaded', snapshot.totalBytes, 'bytes.');
       console.log(snapshot.metadata);
       var url = snapshot.metadata.downloadURLs[0];
       console.log('File available at', url);
       this.updateSquareWithData(key, {
-        fileUrl: url
+        fileUrl: url,
+        fileName: name
       });
   }
 
-  deleteCell(key: string){
-    this.items.remove(key).then(_ => console.log('item deleted!'));
+  deleteCell(item: any){
+    //Delete the associated file
+    if(item.fileName){
+      firebase.storage().ref().child('images/' + item.fileName).delete().then(snapshot => console.log('file deleted'));
+    }
+    //Delete the cell metadata
+    console.log(this.items);
+    this.items.remove(item.$key).then(_ => console.log('item deleted!'));
+  }
+
+  deleteGame(game: any){
+    //Delete any associated files
+    var gameItems = this.af.database.list('/games/' + game.$key + '/items', { preserveSnapshot: true});
+    console.log(game.items);
+    for (var key in game.items) {
+      var obj = game.items[key];
+      console.log(obj);
+      if(obj.fileName){
+        firebase.storage().ref().child('images/' + obj.fileName).delete().then(snapshot => console.log('file deleted'));
+      }
+    }
+    this.games.remove(game.$key).then(_ => console.log('game deleted!'));
+  }
+
+  switchGame(game: any){
+    this.items = this.af.database.list('/games/' + game.$key + '/items');
+    this.currentGameName = game.gameName;
+  }
+
+  addGame(game: HTMLInputElement) {
+    console.log('game=',game)
+    this.games.push({
+      gameName: game.value
+    });
+    game.value = null;
+  }
+
+  setTopic(topic: any){
+    this.selectedTopic = topic;
+  }
+
+  generateGame(numberOfCards: any){
+    console.log(this.selectedTopic.listItems);
+    console.log("number to generate", numberOfCards.value);
+    for(var i = 0; i < parseInt(numberOfCards.value); i++){
+      var listItems = [];
+      for (var key in this.selectedTopic.listItems) {
+        var obj = this.selectedTopic.listItems[key];
+        listItems.push(obj.itemName);
+      }
+      this.games.push({
+        gameName: UUID.UUID(),
+        items: this.getRandom(listItems, 9)
+      });
+    }
+  }
+
+  getRandom(arr, n) {
+    var result = new Array(n),
+        len = arr.length,
+        taken = new Array(len);
+    if (n > len)
+        throw new RangeError("getRandom: more elements taken than available");
+    while (n--) {
+        var x = Math.floor(Math.random() * len);
+        result[n] = {
+          name: arr[x in taken ? taken[x] : x]
+        };
+        taken[x] = --len;
+    }
+    return result;
   }
 }

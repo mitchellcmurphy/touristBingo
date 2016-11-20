@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-
 import { DetailComponent } from './detail.component';
 
 console.log('`Detail` bundle loaded asynchronously');
@@ -19,7 +18,7 @@ export const routes = [
   imports: [
     CommonModule,
     FormsModule,
-    RouterModule.forChild(routes),
+    RouterModule.forChild(routes)
   ]
 })
 export default class AboutModule {

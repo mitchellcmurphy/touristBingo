@@ -20,6 +20,10 @@ import { AboutComponent } from './about';
 import { NoContentComponent } from './no-content';
 import { XLarge } from './home/x-large';
 import { SquaresComponent } from './squares';
+import { CreationToolComponent } from './creation-tool';
+
+import { ModalModule } from 'angular2-modal';
+import { BootstrapModalModule } from 'angular2-modal/plugins/bootstrap';
 
 // Application wide providers
 const APP_PROVIDERS = [
@@ -53,14 +57,17 @@ export const firebaseConfig = {
     HomeComponent,
     NoContentComponent,
     XLarge,
-    SquaresComponent
+    SquaresComponent,
+    CreationToolComponent
   ],
   imports: [ // import Angular's modules
     BrowserModule,
     FormsModule,
     HttpModule,
     RouterModule.forRoot(ROUTES, { useHash: true }),
-    AngularFireModule.initializeApp(firebaseConfig)
+    AngularFireModule.initializeApp(firebaseConfig),
+    ModalModule.forRoot(),
+    BootstrapModalModule
   ],
   providers: [ // expose our Services and Providers into Angular's dependency injection
     ENV_PROVIDERS,
