@@ -21,6 +21,7 @@ import { NoContentComponent } from './no-content';
 import { XLarge } from './home/x-large';
 import { SquaresComponent } from './squares';
 import { CreationToolComponent } from './creation-tool';
+import { ImgModalWindow } from './modal-img/modal-img';
 
 import { ModalModule } from 'angular2-modal';
 import { BootstrapModalModule } from 'angular2-modal/plugins/bootstrap';
@@ -58,7 +59,8 @@ export const firebaseConfig = {
     NoContentComponent,
     XLarge,
     SquaresComponent,
-    CreationToolComponent
+    CreationToolComponent,
+    ImgModalWindow
   ],
   imports: [ // import Angular's modules
     BrowserModule,
@@ -72,7 +74,8 @@ export const firebaseConfig = {
   providers: [ // expose our Services and Providers into Angular's dependency injection
     ENV_PROVIDERS,
     APP_PROVIDERS
-  ]
+  ],
+  entryComponents: [ ImgModalWindow ]
 })
 export class AppModule {
   constructor(public appRef: ApplicationRef, public appState: AppState) {}

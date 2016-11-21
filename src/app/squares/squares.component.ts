@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AngularFire, FirebaseListObservable } from 'angularfire2';
 import { UUID } from 'angular2-uuid';
+import { Modal } from 'angular2-modal/plugins/bootstrap';
+import { ImgModalWindow, SetImgUrlData } from '../modal-img/modal-img';
 
 /*
  * We're loading this component asynchronously
@@ -32,7 +34,7 @@ export class SquaresComponent {
     this.items.update(key, data).then(_ => console.log('update!'));
   }
 
-  constructor(public route: ActivatedRoute, af: AngularFire) {
+  constructor(public route: ActivatedRoute, af: AngularFire, public modal: Modal) {
       // this.items = af.database.list('/items');
       this.af = af;
       this.games = af.database.list('/games');
@@ -114,15 +116,10 @@ export class SquaresComponent {
                 fileUrl: url,
                 fileName: name
               });
-              // console.log(snapshot.val().items[i], snapshot.val().items[i].name);
             }
           }
         });
     })
-    // for (var key in this.games) {
-    //   var obj = this.games[key];
-    //   console.log("BALLS", obj);
-    // }
   }
 
   deleteCell(item: any){
@@ -177,7 +174,7 @@ export class SquaresComponent {
       }
       this.games.push({
         gameName: UUID.UUID(),
-        items: this.getRandom(listItems, 9)
+        items: this.getRandom(listItems, 25)
       });
     }
   }
@@ -196,5 +193,17 @@ export class SquaresComponent {
         taken[x] = --len;
     }
     return result;
+  }
+
+  showImg(url: string){
+    // this.modal.open(ImgModalWindow, new SetImgUrlData(url));
+    var body = '<img width=100% src="' + url +'">';
+    this.modal.alert()
+        .size('lg')
+        .showClose(true)
+        .title('Cell Image')
+        .body(body)
+        .open();
+  }
   }
 }

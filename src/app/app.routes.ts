@@ -4,6 +4,7 @@ import { AboutComponent } from './about';
 import { NoContentComponent } from './no-content';
 import { SquaresComponent } from './squares';
 import { CreationToolComponent } from './creation-tool';
+import { ImgModalWindow } from './modal-img/modal-img';
 
 import { DataResolver } from './app.resolver';
 

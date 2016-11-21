@@ -52,7 +52,7 @@
                         <!--<span class="delete-cell" (click)="deleteCell(item)">x</span>-->
                         <input type="file" name="file" id="{{ item.$key }}" class="inputfile" (change)="uploadPicture($event, item)"/>
                         <label *ngIf="!item.fileUrl" [attr.for]="item.$key">{{item.name}}</label>
-                        <img *ngIf="item.fileUrl" src="{{item.fileUrl}}" class="cell-img">
+                        <img *ngIf="item.fileUrl" src="../../assets/img/star.png" class="cell-img" (click)=showImg(item.fileUrl)>
                     </div>
                 </div>
             </div>
