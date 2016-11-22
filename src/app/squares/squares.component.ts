@@ -108,7 +108,8 @@ export class SquaresComponent {
             var obj = snapshot.val().items[key];
             console.log("shits again", obj);
             if(obj.name === this.uploadingBox){
-              this.af.database.list('/games/' + gameKey + '/items').update(key, {
+              var itemsToUpdate = this.af.database.list('/games/' + gameKey + '/items');
+              itemsToUpdate.update(key, {
                 fileUrl: url,
                 fileName: name
               });
