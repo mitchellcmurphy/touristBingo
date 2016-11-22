@@ -3,8 +3,8 @@
 
     <div class="enter-card-container">
         <span>Enter a topic name: </span>
-        <input type="text" name="Game Name" #gameName (keyup)="doneTypingTopic($event)">
-        <button class="add-game" (click)="addGame(gameName)">Add Card</button>
+        <input type="text" name="Topic Name" #topicName (keyup)="doneTypingTopic($event)">
+        <button class="add-game" (click)="addTopic(topicName)">Add Topic</button>
     </div>
 
     <div class="game-names-container">

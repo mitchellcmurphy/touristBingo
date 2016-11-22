@@ -24,19 +24,14 @@ export class SquaresComponent {
   topics: FirebaseListObservable<any[]>;
   localState: any;
   storageRef: any;
-  af: AngularFire;
-  currentGameName: string;
+  // af: AngularFire;
+  currentGame: any;
   selectedTopic: any;
   uploadingBox: string;
 
-  updateSquareWithData = (key: string, data: Object) => {
-    console.log("Updating", key, "With", data);
-    this.items.update(key, data).then(_ => console.log('update!'));
-  }
-
-  constructor(public route: ActivatedRoute, af: AngularFire, public modal: Modal) {
+  constructor(public route: ActivatedRoute, public af: AngularFire, public modal: Modal) {
       // this.items = af.database.list('/items');
-      this.af = af;
+      // this.af = af;
       this.games = af.database.list('/games');
       this.topics = af.database.list('/topics');
   }
@@ -98,37 +93,62 @@ export class SquaresComponent {
     console.log(snapshot.metadata);
     var url = snapshot.metadata.downloadURLs[0];
     console.log('File available at', url);
-    this.updateSquareWithData(key, {
-      fileUrl: url,
-      fileName: name
-    });
+    // this.updateSquareWithData(key, {
+    //   fileUrl: url,
+    //   fileName: name
+    // });
 
     //HACK TODO FIX THIS WITH DATABASE LATER
     this.af.database.list('/games', { preserveSnapshot: true})
     .subscribe(snapshots=>{
         snapshots.forEach(snapshot => {
-          // console.log(snapshot.key, snapshot.val().items);
+          console.log("shits", snapshot.key, snapshot.val().items);
           var gameKey = snapshot.key;
-          for(var i = 0; i < snapshot.val().items.length; i++){
-            // console.log(snapshot.val().items[i].name);
-            if(snapshot.val().items[i].name === this.uploadingBox){
-              this.af.database.list('/games/' + gameKey + '/items').update(String(i), {
+          for (var key in snapshot.val().items) {
+            var obj = snapshot.val().items[key];
+            console.log("shits again", obj);
+            if(obj.name === this.uploadingBox){
+              this.af.database.list('/games/' + gameKey + '/items').update(key, {
                 fileUrl: url,
                 fileName: name
               });
             }
           }
+
+          // for(var i = 0; i < snapshot.val().items.length; i++){
+          //   console.log("shits again", snapshot.val().items[i]);
+          //   if(snapshot.val().items[i].name === this.uploadingBox){
+          //     this.af.database.list('/games/' + gameKey + '/items').update(snapshot.val().items[i].$key, {
+          //       fileUrl: url,
+          //       fileName: name
+          //     });
+          //   }
+          // }
         });
     })
   }
 
+  updateSquareWithData(key: string, data: Object){
+    console.log("Updating", key, "With", data);
+    var updateItems = this.af.database.list('/games/' + this.currentGame.$key + '/items');
+    console.log("BALLS", updateItems);
+    updateItems.remove(key);
+    // this.af.database.list('/games/' + this.currentGame.$key + '/items').update(key, data);
+    // this.items.update(key, data).then(_ => console.log('update!'));
+  };
+
   deleteCell(item: any){
     //Delete the associated file
     if(item.fileName){
-      firebase.storage().ref().child('images/' + item.fileName).delete().then(snapshot => console.log('file deleted'));
+      firebase.storage().ref().child('images/' + item.fileName).delete()
+      .then(
+        snapshot => console.log('file deleted')
+      )
+      .catch(function(error){
+        console.log("File delete error", error);
+      });
     }
     //Delete the cell metadata
-    console.log(this.items);
     this.items.remove(item.$key).then(_ => console.log('item deleted!'));
   }
 
@@ -148,7 +168,7 @@ export class SquaresComponent {
 
   switchGame(game: any){
     this.items = this.af.database.list('/games/' + game.$key + '/items');
-    this.currentGameName = game.gameName;
+    this.currentGame = game;
   }
 
   addGame(game: HTMLInputElement) {
@@ -172,10 +192,19 @@ export class SquaresComponent {
         var obj = this.selectedTopic.listItems[key];
         listItems.push(obj.itemName);
       }
-      this.games.push({
-        gameName: UUID.UUID(),
-        items: this.getRandom(listItems, 25)
+      // this.games.push({
+      //   gameName: UUID.UUID(),
+      //   items: this.getRandom(listItems, 25)
+      // });
+      var newGameRef = this.games.push({
+        gameName: UUID.UUID()
       });
+
+      var newItems = this.getRandom(listItems, 25);
+
+      for(var i = 0; i < newItems.length; i++){
+        this.af.database.list('/games/' + newGameRef.key + '/items').push(newItems[i]);
+      }
     }
   }
 
@@ -205,5 +234,16 @@ export class SquaresComponent {
         .body(body)
         .open();
   }
+
+  uploadFile($event) {
+    var files = $event.srcElement.files;
+    $event.stopPropagation();
+    $event.preventDefault();
+    var file = files[0];
+    var metadata = {
+      'contentType': file.type
+    };
+    var filename = file.name + UUID.UUID();
+    firebase.storage().ref().child('images/' + filename).put(file, metadata).then(snapshot => console.log("FIGARO!"));
   }
 }

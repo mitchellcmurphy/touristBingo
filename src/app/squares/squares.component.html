@@ -36,7 +36,7 @@
     </div>
 
     <div class="game-name-header">
-        <h2>{{currentGameName ? currentGameName : "Select A Card"}}</h2>
+        <h2>{{currentGame && currentGame.gameName ? currentGame.gameName : "Select A Card"}}</h2>
     </div>
 
     <!--<div class="enter-subject-container">
@@ -44,15 +44,18 @@
         <input type="text" name="Name" #nameVal (keyup)="doneTyping($event)">
         <button (click)="addToGame(nameVal)">Add Box</button>
     </div>-->
-    <div *ngFor="let item of items | async">  
-        <div class="square">
-            <div class="content">
-                <div class="bingo-table">
-                    <div class="bingo-table-cell">
-                        <!--<span class="delete-cell" (click)="deleteCell(item)">x</span>-->
-                        <input type="file" name="file" id="{{ item.$key }}" class="inputfile" (change)="uploadPicture($event, item)"/>
-                        <label *ngIf="!item.fileUrl" [attr.for]="item.$key">{{item.name}}</label>
-                        <img *ngIf="item.fileUrl" src="../../assets/img/star.png" class="cell-img" (click)=showImg(item.fileUrl)>
+
+    <div *ngIf="(items | async)?.length>0">
+        <div *ngFor="let item of items | async">  
+            <div class="square">
+                <div class="content">
+                    <div class="bingo-table">
+                        <div class="bingo-table-cell">
+                            <!--<span class="delete-cell" (click)="deleteCell(item)">x</span>-->
+                            <input type="file" name="file" id="{{ item.$key }}" class="inputfile" (change)="uploadPicture($event, item)"/>
+                            <label [attr.for]="item.$key">{{item.name}}</label>
+                            <img *ngIf="item.fileUrl" src="../../assets/img/star.png" class="cell-img" (click)=showImg(item.fileUrl)>
+                        </div>
                     </div>
                 </div>
             </div>
