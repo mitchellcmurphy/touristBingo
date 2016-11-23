@@ -4,10 +4,8 @@ import { DialogRef, ModalComponent } from 'angular2-modal';
 import { BSModalContext } from 'angular2-modal/plugins/bootstrap';
 
 export class SetImgUrlData extends BSModalContext {
-  constructor(public url: string) {
-    super();
-    console.log(url);
-  }
+  public url: string;
+  public imgData: any;
 }
 
 /**
@@ -30,19 +28,23 @@ export class SetImgUrlData extends BSModalContext {
             margin-bottom: 40px;
         }
     `],
-  //TODO: [ngClass] here on purpose, no real use, just to show how to workaround ng2 issue #4330.
-  // Remove when solved.
-  /* tslint:disable */ template: `
-        <img src="https://firebasestorage.googleapis.com/v0/b/touristbingo-2a6b3.appspot.com/o/images%2FnatAndMeSmaller.jpg255b4a48-3b02-72d0-0f31-3cb1a76c7ef9?alt=media&token=742bd58b-4fd3-4a3c-941c-03eef85c741c">`
+    templateUrl: './modal-img.html'
 })
 export class ImgModalWindow implements ModalComponent<SetImgUrlData> {
   context: SetImgUrlData;
+  fileData: any;
 
   public wrongAnswer: boolean;
 
   constructor(public dialog: DialogRef<SetImgUrlData>) {
     this.context = dialog.context;
     this.wrongAnswer = true;
+
+    let reader = new FileReader();
+    reader.onload = (e) => {
+        this.fileData = reader.result;
+    };
+    reader.readAsDataURL(this.context.imgData);
   }
 
   onKeyUp(value) {
@@ -57,5 +59,9 @@ export class ImgModalWindow implements ModalComponent<SetImgUrlData> {
 
   beforeClose(): boolean {
     return this.wrongAnswer;
+  }
+
+  closeModal(){
+    this.dialog.close();
   }
 }

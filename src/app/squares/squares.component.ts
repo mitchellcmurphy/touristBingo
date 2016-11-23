@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AngularFire, FirebaseListObservable } from 'angularfire2';
 import { UUID } from 'angular2-uuid';
-import { Modal } from 'angular2-modal/plugins/bootstrap';
+import { Overlay, overlayConfigFactory } from 'angular2-modal';
+import { Modal, BSModalContext } from 'angular2-modal/plugins/bootstrap';
 import { ImgModalWindow, SetImgUrlData } from '../modal-img/modal-img';
 
 /*
@@ -16,7 +17,8 @@ console.log('`Squares` component loaded asynchronously');
 @Component({
   selector: 'squares',
   styleUrls: [ './squares.component.css' ],
-  templateUrl: './squares.component.html'
+  templateUrl: './squares.component.html',
+  providers: [Modal]
 })
 export class SquaresComponent {
   items: FirebaseListObservable<any[]>;
@@ -75,17 +77,18 @@ export class SquaresComponent {
   }
 
   uploadPicture($event, item: any) {
-    var key = item.$key;
-    this.uploadingBox = item.name;
-    var files = $event.srcElement.files;
-    $event.stopPropagation();
-    $event.preventDefault();
-    var file = files[0];
-    var metadata = {
-      'contentType': file.type
-    };
-    var filename = file.name + UUID.UUID();
-    firebase.storage().ref().child('images/' + filename).put(file, metadata).then(snapshot => this.obtainUploadUrl(snapshot, key, filename));
+    return this.modal.open(ImgModalWindow,  overlayConfigFactory({ imgData: $event.srcElement.files[0] }, BSModalContext));
+    // var key = item.$key;
+    // this.uploadingBox = item.name;
+    // var files = $event.srcElement.files;
+    // $event.stopPropagation();
+    // $event.preventDefault();
+    // var file = files[0];
+    // var metadata = {
+    //   'contentType': file.type
+    // };
+    // var filename = file.name + UUID.UUID();
+    // firebase.storage().ref().child('images/' + filename).put(file, metadata).then(snapshot => this.obtainUploadUrl(snapshot, key, filename));
   }
 
   obtainUploadUrl(snapshot: any, key: string, name: string){
@@ -226,14 +229,14 @@ export class SquaresComponent {
   }
 
   showImg(url: string){
-    // this.modal.open(ImgModalWindow, new SetImgUrlData(url));
-    var body = '<img width=100% src="' + url +'">';
-    this.modal.alert()
-        .size('lg')
-        .showClose(true)
-        .title('Cell Image')
-        .body(body)
-        .open();
+    return this.modal.open(ImgModalWindow,  overlayConfigFactory({ url: "google.com/stuff" }, BSModalContext));
+  //   var body = '<img width=100% src="' + url +'">';
+  //   this.modal.alert()
+  //       .size('lg')
+  //       .showClose(true)
+  //       .title('Cell Image')
+  //       .body(body)
+  //       .open();
   }
 
   uploadFile($event) {
