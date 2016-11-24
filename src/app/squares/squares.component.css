@@ -52,6 +52,10 @@
 .cell-img{
   width:100%;
   margin-top: -10px;
+  position: absolute;
+  z-index: -1;
+  left: 0;
+  top: 30px;
   /*-ms-transform: rotate(90deg);
   -webkit-transform: rotate(90deg); 
   transform: rotate(90deg);*/

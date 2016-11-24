@@ -3,10 +3,10 @@
     </div>
 
     <div class="modal=body">
-        <span *ngIf="fileData">Shits</span>
+        <span>{{this.context.itemRef.name}}</span>
         <img *ngIf="fileData" width=100% [attr.src]="fileData" />
     </div>
 
     <div class="modal-footer">
-        <button class="btn btn-primary" (click)=closeModal()>OK</button>
+        <button class="btn btn-primary" (click)=uploadAndCloseModal()>Upload</button>
     </div>

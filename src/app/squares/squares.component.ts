@@ -76,8 +76,12 @@ export class SquaresComponent {
     }
   }
 
-  uploadPicture($event, item: any) {
-    return this.modal.open(ImgModalWindow,  overlayConfigFactory({ imgData: $event.srcElement.files[0] }, BSModalContext));
+  prepareToUploadPicture($event, item: any) {
+    return this.modal.open(ImgModalWindow,  overlayConfigFactory(
+      { 
+        imgData: $event.srcElement.files[0],
+        itemRef: item
+      }, BSModalContext));
     // var key = item.$key;
     // this.uploadingBox = item.name;
     // var files = $event.srcElement.files;
@@ -91,55 +95,55 @@ export class SquaresComponent {
     // firebase.storage().ref().child('images/' + filename).put(file, metadata).then(snapshot => this.obtainUploadUrl(snapshot, key, filename));
   }
 
-  obtainUploadUrl(snapshot: any, key: string, name: string){
-    console.log('Uploaded', snapshot.totalBytes, 'bytes.');
-    console.log(snapshot.metadata);
-    var url = snapshot.metadata.downloadURLs[0];
-    console.log('File available at', url);
-    // this.updateSquareWithData(key, {
-    //   fileUrl: url,
-    //   fileName: name
-    // });
+  // obtainUploadUrl(snapshot: any, key: string, name: string){
+  //   console.log('Uploaded', snapshot.totalBytes, 'bytes.');
+  //   console.log(snapshot.metadata);
+  //   var url = snapshot.metadata.downloadURLs[0];
+  //   console.log('File available at', url);
+  //   // this.updateSquareWithData(key, {
+  //   //   fileUrl: url,
+  //   //   fileName: name
+  //   // });
 
-    //HACK TODO FIX THIS WITH DATABASE LATER
-    this.af.database.list('/games', { preserveSnapshot: true})
-    .subscribe(snapshots=>{
-        snapshots.forEach(snapshot => {
-          console.log("shits", snapshot.key, snapshot.val().items);
-          var gameKey = snapshot.key;
-          for (var key in snapshot.val().items) {
-            var obj = snapshot.val().items[key];
-            console.log("shits again", obj);
-            if(obj.name === this.uploadingBox){
-              var itemsToUpdate = this.af.database.list('/games/' + gameKey + '/items');
-              itemsToUpdate.update(key, {
-                fileUrl: url,
-                fileName: name
-              });
-            }
-          }
+  //   //HACK TODO FIX THIS WITH DATABASE LATER
+  //   this.af.database.list('/games', { preserveSnapshot: true})
+  //   .subscribe(snapshots=>{
+  //       snapshots.forEach(snapshot => {
+  //         console.log("shits", snapshot.key, snapshot.val().items);
+  //         var gameKey = snapshot.key;
+  //         for (var key in snapshot.val().items) {
+  //           var obj = snapshot.val().items[key];
+  //           console.log("shits again", obj);
+  //           if(obj.name === this.uploadingBox){
+  //             var itemsToUpdate = this.af.database.list('/games/' + gameKey + '/items');
+  //             itemsToUpdate.update(key, {
+  //               fileUrl: url,
+  //               fileName: name
+  //             });
+  //           }
+  //         }
 
-          // for(var i = 0; i < snapshot.val().items.length; i++){
-          //   console.log("shits again", snapshot.val().items[i]);
-          //   if(snapshot.val().items[i].name === this.uploadingBox){
-          //     this.af.database.list('/games/' + gameKey + '/items').update(snapshot.val().items[i].$key, {
-          //       fileUrl: url,
-          //       fileName: name
-          //     });
-          //   }
-          // }
-        });
-    })
-  }
+  //         // for(var i = 0; i < snapshot.val().items.length; i++){
+  //         //   console.log("shits again", snapshot.val().items[i]);
+  //         //   if(snapshot.val().items[i].name === this.uploadingBox){
+  //         //     this.af.database.list('/games/' + gameKey + '/items').update(snapshot.val().items[i].$key, {
+  //         //       fileUrl: url,
+  //         //       fileName: name
+  //         //     });
+  //         //   }
+  //         // }
+  //       });
+  //   })
+  // }
 
-  updateSquareWithData(key: string, data: Object){
-    console.log("Updating", key, "With", data);
-    var updateItems = this.af.database.list('/games/' + this.currentGame.$key + '/items');
-    console.log("BALLS", updateItems);
-    updateItems.remove(key);
-    // this.af.database.list('/games/' + this.currentGame.$key + '/items').update(key, data);
-    // this.items.update(key, data).then(_ => console.log('update!'));
-  };
+  // updateSquareWithData(key: string, data: Object){
+  //   console.log("Updating", key, "With", data);
+  //   var updateItems = this.af.database.list('/games/' + this.currentGame.$key + '/items');
+  //   console.log("BALLS", updateItems);
+  //   updateItems.remove(key);
+  //   // this.af.database.list('/games/' + this.currentGame.$key + '/items').update(key, data);
+  //   // this.items.update(key, data).then(_ => console.log('update!'));
+  // };
 
   deleteCell(item: any){
     //Delete the associated file
@@ -162,7 +166,7 @@ export class SquaresComponent {
     console.log(game.items);
     for (var key in game.items) {
       var obj = game.items[key];
-      console.log(obj);
+      console.log("Deleting object:", obj);
       if(obj.fileName){
         firebase.storage().ref().child('images/' + obj.fileName).delete().then(snapshot => console.log('file deleted'));
       }
@@ -189,25 +193,23 @@ export class SquaresComponent {
 
   generateGame(numberOfCards: any){
     console.log(this.selectedTopic.listItems);
-    console.log("number to generate", numberOfCards.value);
-    for(var i = 0; i < parseInt(numberOfCards.value); i++){
+    var parsedNumber = parseInt(numberOfCards.value);
+    console.log("number to generate", parsedNumber);
+    for(var i = 0; i < parsedNumber; i++){
       var listItems = [];
       for (var key in this.selectedTopic.listItems) {
         var obj = this.selectedTopic.listItems[key];
         listItems.push(obj.itemName);
       }
-      // this.games.push({
-      //   gameName: UUID.UUID(),
-      //   items: this.getRandom(listItems, 25)
-      // });
+      
       var newGameRef = this.games.push({
         gameName: UUID.UUID()
       });
 
       var newItems = this.getRandom(listItems, 25);
 
-      for(var i = 0; i < newItems.length; i++){
-        this.af.database.list('/games/' + newGameRef.key + '/items').push(newItems[i]);
+      for(var j = 0; j < newItems.length; j++){
+        this.af.database.list('/games/' + newGameRef.key + '/items').push(newItems[j]);
       }
     }
   }
@@ -228,15 +230,15 @@ export class SquaresComponent {
     return result;
   }
 
-  showImg(url: string){
-    return this.modal.open(ImgModalWindow,  overlayConfigFactory({ url: "google.com/stuff" }, BSModalContext));
-  //   var body = '<img width=100% src="' + url +'">';
-  //   this.modal.alert()
-  //       .size('lg')
-  //       .showClose(true)
-  //       .title('Cell Image')
-  //       .body(body)
-  //       .open();
+  showImg(url: string, name: string){
+    // return this.modal.open(ImgModalWindow,  overlayConfigFactory({ url: "google.com/stuff" }, BSModalContext));
+    var body = '<span>' + name + '</span><img width=100% src="' + url +'">';
+    this.modal.alert()
+        .size('lg')
+        .showClose(true)
+        .title('Cell Image')
+        .body(body)
+        .open();
   }
 
   uploadFile($event) {
