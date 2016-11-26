@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 import { removeNgStyles, createNewHosts, createInputTransfer } from '@angularclass/hmr';
+import { AngularFireModule } from 'angularfire2';
 
 /*
  * Platform and Environment providers/directives/pipes
@@ -19,6 +20,11 @@ import { AboutComponent } from './about';
 import { NoContentComponent } from './no-content';
 import { XLarge } from './home/x-large';
 import { SquaresComponent } from './squares';
+import { CreationToolComponent } from './creation-tool';
+import { ImgModalWindow } from './modal-img/modal-img';
+
+import { ModalModule } from 'angular2-modal';
+import { BootstrapModalModule } from 'angular2-modal/plugins/bootstrap';
 
 // Application wide providers
 const APP_PROVIDERS = [
@@ -32,6 +38,15 @@ type StoreType = {
   disposeOldHosts: () => void
 };
 
+//Firebase
+export const firebaseConfig = {
+  apiKey: "AIzaSyCzG1IQAkNJLr8hXcqgStltB897BMs_jK8",
+  authDomain: "touristbingo-2a6b3.firebaseapp.com",
+  databaseURL: "https://touristbingo-2a6b3.firebaseio.com",
+  storageBucket: "touristbingo-2a6b3.appspot.com",
+  messagingSenderId: "889266554830"
+};
+
 /**
  * `AppModule` is the main entry point into Angular2's bootstraping process
  */
@@ -43,18 +58,24 @@ type StoreType = {
     HomeComponent,
     NoContentComponent,
     XLarge,
-    SquaresComponent
+    SquaresComponent,
+    CreationToolComponent,
+    ImgModalWindow
   ],
   imports: [ // import Angular's modules
     BrowserModule,
     FormsModule,
     HttpModule,
-    RouterModule.forRoot(ROUTES, { useHash: true })
+    RouterModule.forRoot(ROUTES, { useHash: true }),
+    AngularFireModule.initializeApp(firebaseConfig),
+    ModalModule.forRoot(),
+    BootstrapModalModule
   ],
   providers: [ // expose our Services and Providers into Angular's dependency injection
     ENV_PROVIDERS,
     APP_PROVIDERS
-  ]
+  ],
+  entryComponents: [ ImgModalWindow ]
 })
 export class AppModule {
   constructor(public appRef: ApplicationRef, public appState: AppState) {}

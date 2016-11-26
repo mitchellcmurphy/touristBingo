@@ -17,27 +17,15 @@ import { AppState } from './app.service';
   ],
   template: `
     <nav>
-      <span>
+      <!--<span>
         <a [routerLink]=" ['./'] ">
           Index
         </a>
       </span>
-      |
+      |-->
       <span>
         <a [routerLink]=" ['./home'] ">
           Home
-        </a>
-      </span>
-      |
-      <span>
-        <a [routerLink]=" ['./detail'] ">
-          Detail
-        </a>
-      </span>
-      |
-      <span>
-        <a [routerLink]=" ['./about'] ">
-          About
         </a>
       </span>
       |
@@ -46,22 +34,25 @@ import { AppState } from './app.service';
           Squares
         </a>
       </span>
+      |
+      <span>
+        <a [routerLink]=" ['./creation-tool'] ">
+          Creation Tool
+        </a>
+      </span>
     </nav>
 
     <main>
       <router-outlet></router-outlet>
     </main>
 
-    <pre class="app-state">this.appState.state = {{ appState.state | json }}</pre>
+    <span defaultOverlayTarget></span>
 
-    <footer>
-      <span>WebPack Angular 2 Starter by <a [href]="url">@AngularClass</a></span>
+    <!--<footer>
       <div>
-        <a [href]="url">
-          <img [src]="angularclassLogo" width="25%">
-        </a>
+        Footer Stuffs
       </div>
-    </footer>
+    </footer>-->
   `
 })
 export class AppComponent {

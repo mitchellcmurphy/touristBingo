@@ -1,0 +1,12 @@
+    <div class="modal-header">
+        Herro
+    </div>
+
+    <div class="modal=body">
+        <span>{{this.context.itemRef.name}}</span>
+        <img *ngIf="fileData" width=100% [attr.src]="fileData" />
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-primary" (click)=uploadAndCloseModal()>Upload</button>
+    </div>

@@ -1,0 +1,38 @@
+<div class="squares-card-container">
+    <h1>Creation Tool</h1>
+
+    <div class="enter-card-container">
+        <span>Enter a topic name: </span>
+        <input type="text" name="Topic Name" #topicName (keyup)="doneTypingTopic($event)">
+        <button class="add-game" (click)="addTopic(topicName)">Add Topic</button>
+    </div>
+
+    <div class="game-names-container">
+        <div *ngFor="let topic of topics | async">
+            <span class="game-name" (click)="switchTopic(topic)">
+                {{topic.topicName}}
+                <span class="delete-game" (click)=deleteTopic(topic)>x</span>
+            </span>
+        </div>
+    </div>
+
+    <div class="game-name-header">
+        <h2>{{currentTopicName ? currentTopicName : "Select A Topic"}}</h2>
+    </div>
+
+    <div class="enter-subject-container">
+        <span>Enter a topic item: </span>
+        <input type="text" name="Item" #nameVal (keyup)="doneTypingListItem($event)">
+        <button (click)="addToTopic(nameVal)">Add Item</button>
+    </div>
+    <div>  
+        <div *ngFor="let item of listItems | async">
+            <span class="game-name">
+                {{item.itemName}}
+                <span class="delete-game" (click)=deleteItem(item)>x</span>
+            </span>
+        </div>
+    </div>
+
+    <br>
+</div>

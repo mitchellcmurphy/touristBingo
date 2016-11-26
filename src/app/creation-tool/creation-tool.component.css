@@ -5,7 +5,7 @@
 .square {
     float:left;
     position: relative;
-    width: 16%;
+    width: 30%;
     padding-bottom : 30%; /* = width for a 1:1 aspect ratio */
     margin:1.66%;
     overflow:hidden;
@@ -51,11 +51,6 @@
 
 .cell-img{
   width:100%;
-  margin-top: -10px;
-  position: absolute;
-  z-index: -1;
-  left: 0;
-  top: 30px;
   /*-ms-transform: rotate(90deg);
   -webkit-transform: rotate(90deg); 
   transform: rotate(90deg);*/
@@ -88,8 +83,4 @@
 
 .delete-game{
   float: right;
-}
-
-.generate-game{
-  display: flex;
 }

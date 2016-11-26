@@ -3,6 +3,8 @@ import { HomeComponent } from './home';
 import { AboutComponent } from './about';
 import { NoContentComponent } from './no-content';
 import { SquaresComponent } from './squares';
+import { CreationToolComponent } from './creation-tool';
+import { ImgModalWindow } from './modal-img/modal-img';
 
 import { DataResolver } from './app.resolver';
 
@@ -12,6 +14,7 @@ export const ROUTES: Routes = [
   { path: 'home',  component: HomeComponent },
   { path: 'about', component: AboutComponent },
   { path: 'squares', component: SquaresComponent },
+  { path: 'creation-tool', component: CreationToolComponent },
   {
     path: 'detail', loadChildren: () => System.import('./+detail').then((comp: any) => {
       return comp.default;
