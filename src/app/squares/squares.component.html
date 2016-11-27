@@ -1,7 +1,9 @@
 <div class="squares-card-container">
     <h1>Squares</h1>
 
-    <div class="dropdown">
+    <button class="btn btn-primary" (click)=createGame()>New Game</button>
+
+    <!--<div class="dropdown">
         <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Select Topic
         <span class="caret"></span></button>
         <ul class="dropdown-menu">
@@ -9,16 +11,16 @@
                 <a (click)=setTopic(topic)>{{topic.topicName}}</a>
             </li>
         </ul>
-    </div>
+    </div>-->
 
-    <div>{{selectedTopic && selectedTopic.topicName ? selectedTopic.topicName : "Select Topic"}}</div>
+    <!--<div>{{selectedTopic && selectedTopic.topicName ? selectedTopic.topicName : "Select Topic"}}</div>-->
 
-    <div>
+    <!--<div>
         <span>Enter number of cards to generate: </span>
         <input type="text" name="Number of Cards" #cardsNumber>
-    </div>
+    </div>-->
 
-    <button (click)=generateGame(cardsNumber)>Generate</button>
+    <!--<button (click)=generateGame(cardsNumber)>Generate</button>-->
 
     <!--<div class="enter-card-container">
         <span>Enter a card name: </span>
@@ -36,7 +38,7 @@
     </div>
 
     <div class="game-name-header">
-        <h2>{{currentGame && currentGame.gameName ? currentGame.gameName : "Select A Card"}}</h2>
+        <h2>{{currentGame && currentGame.gameName ? currentGame.gameName : ""}}</h2>
     </div>
 
     <!--<div class="enter-subject-container">
@@ -54,8 +56,8 @@
                             <!--<span class="delete-cell" (click)="deleteCell(item)">x</span>-->
                             <input type="file" name="file" id="{{ item.$key }}" class="inputfile" (change)="prepareToUploadPicture($event, item)"/>
                             <label  *ngIf="!item.fileUrl" [attr.for]="item.$key">{{item.name}}</label>
-                            <span *ngIf="item.fileUrl" (click)="showImg(item.fileUrl, item.name)">{{item.name}}</span>
-                            <img *ngIf="item.fileUrl" src="../../assets/img/star.png" class="cell-img" (click)="showImg(item.fileUrl, item.name)">
+                            <span *ngIf="item.fileUrl" (click)="showImg(item.fileUrl, item)">{{item.name}}</span>
+                            <img *ngIf="item.fileUrl" src="../../assets/img/star.png" class="cell-img" (click)="showImg(item.fileUrl, item)">
                         </div>
                     </div>
                 </div>

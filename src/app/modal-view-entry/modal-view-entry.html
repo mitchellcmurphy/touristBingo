@@ -1,0 +1,11 @@
+    <div class="modal-header">
+        {{context.itemRef.name}}
+    </div>
+
+    <div class="modal=body" id="viewImgBody">
+        <img (swipeleft)="swipe($event.type)" (swiperight)="swipe($event.type)" (swipedown)="swipe($event.type)"  *ngIf="context.fileUrl" width=100% [attr.src]="context.fileUrl" />
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-primary" (click)=closeModal()>Close</button>
+    </div>
