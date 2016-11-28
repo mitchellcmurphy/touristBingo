@@ -6,7 +6,7 @@ import { BSModalContext } from 'angular2-modal/plugins/bootstrap';
 import { AngularFire, FirebaseListObservable } from 'angularfire2';
 import { UUID } from 'angular2-uuid';
 
-export class SetImgUrlData extends BSModalContext {
+export class SetImgData extends BSModalContext {
   public url: string;
   public imgData: any;
   public itemRef: any;
@@ -34,14 +34,14 @@ export class SetImgUrlData extends BSModalContext {
     `],
     templateUrl: './modal-img.html'
 })
-export class ImgModalWindow implements ModalComponent<SetImgUrlData> {
-  context: SetImgUrlData;
+export class ImgModalWindow implements ModalComponent<SetImgData> {
+  context: SetImgData;
   fileData: any;
   uploadingBox: string;
 
   public wrongAnswer: boolean;
 
-  constructor(public dialog: DialogRef<SetImgUrlData>, public af: AngularFire) {
+  constructor(public dialog: DialogRef<SetImgData>, public af: AngularFire) {
     this.context = dialog.context;
     this.wrongAnswer = true;
 
@@ -64,6 +64,10 @@ export class ImgModalWindow implements ModalComponent<SetImgUrlData> {
 
   beforeClose(): boolean {
     return this.wrongAnswer;
+  }
+
+  closeModal(){
+    this.dialog.close();
   }
 
   uploadAndCloseModal(){
@@ -90,11 +94,11 @@ export class ImgModalWindow implements ModalComponent<SetImgUrlData> {
     this.af.database.list('/games', { preserveSnapshot: true})
     .subscribe(snapshots=>{
         snapshots.forEach(snapshot => {
-          console.log("shits", snapshot.key, snapshot.val().items);
+          console.log("snapshot", snapshot.key, snapshot.val().items);
           var gameKey = snapshot.key;
           for (var key in snapshot.val().items) {
             var obj = snapshot.val().items[key];
-            console.log("shits again", obj);
+            console.log("Current iterated obj", obj);
             if(obj.name === this.uploadingBox){
               var itemsToUpdate = this.af.database.list('/games/' + gameKey + '/items');
               itemsToUpdate.update(key, {

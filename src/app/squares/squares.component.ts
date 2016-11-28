@@ -4,7 +4,9 @@ import { AngularFire, FirebaseListObservable } from 'angularfire2';
 import { UUID } from 'angular2-uuid';
 import { Overlay, overlayConfigFactory } from 'angular2-modal';
 import { Modal, BSModalContext } from 'angular2-modal/plugins/bootstrap';
-import { ImgModalWindow, SetImgUrlData } from '../modal-img/modal-img';
+import { ImgModalWindow, SetImgData } from '../modal-img/modal-img';
+import { ImgViewModalWindow, SetImgUrlData } from '../modal-view-entry/modal-view-entry';
+import { CreateGameModalWindow, SetNewGameData } from '../modal-create-game/modal-create-game';
 
 /*
  * We're loading this component asynchronously
@@ -82,68 +84,7 @@ export class SquaresComponent {
         imgData: $event.srcElement.files[0],
         itemRef: item
       }, BSModalContext));
-    // var key = item.$key;
-    // this.uploadingBox = item.name;
-    // var files = $event.srcElement.files;
-    // $event.stopPropagation();
-    // $event.preventDefault();
-    // var file = files[0];
-    // var metadata = {
-    //   'contentType': file.type
-    // };
-    // var filename = file.name + UUID.UUID();
-    // firebase.storage().ref().child('images/' + filename).put(file, metadata).then(snapshot => this.obtainUploadUrl(snapshot, key, filename));
   }
-
-  // obtainUploadUrl(snapshot: any, key: string, name: string){
-  //   console.log('Uploaded', snapshot.totalBytes, 'bytes.');
-  //   console.log(snapshot.metadata);
-  //   var url = snapshot.metadata.downloadURLs[0];
-  //   console.log('File available at', url);
-  //   // this.updateSquareWithData(key, {
-  //   //   fileUrl: url,
-  //   //   fileName: name
-  //   // });
-
-  //   //HACK TODO FIX THIS WITH DATABASE LATER
-  //   this.af.database.list('/games', { preserveSnapshot: true})
-  //   .subscribe(snapshots=>{
-  //       snapshots.forEach(snapshot => {
-  //         console.log("shits", snapshot.key, snapshot.val().items);
-  //         var gameKey = snapshot.key;
-  //         for (var key in snapshot.val().items) {
-  //           var obj = snapshot.val().items[key];
-  //           console.log("shits again", obj);
-  //           if(obj.name === this.uploadingBox){
-  //             var itemsToUpdate = this.af.database.list('/games/' + gameKey + '/items');
-  //             itemsToUpdate.update(key, {
-  //               fileUrl: url,
-  //               fileName: name
-  //             });
-  //           }
-  //         }
-
-  //         // for(var i = 0; i < snapshot.val().items.length; i++){
-  //         //   console.log("shits again", snapshot.val().items[i]);
-  //         //   if(snapshot.val().items[i].name === this.uploadingBox){
-  //         //     this.af.database.list('/games/' + gameKey + '/items').update(snapshot.val().items[i].$key, {
-  //         //       fileUrl: url,
-  //         //       fileName: name
-  //         //     });
-  //         //   }
-  //         // }
-  //       });
-  //   })
-  // }
-
-  // updateSquareWithData(key: string, data: Object){
-  //   console.log("Updating", key, "With", data);
-  //   var updateItems = this.af.database.list('/games/' + this.currentGame.$key + '/items');
-  //   console.log("BALLS", updateItems);
-  //   updateItems.remove(key);
-  //   // this.af.database.list('/games/' + this.currentGame.$key + '/items').update(key, data);
-  //   // this.items.update(key, data).then(_ => console.log('update!'));
-  // };
 
   deleteCell(item: any){
     //Delete the associated file
@@ -201,7 +142,7 @@ export class SquaresComponent {
         var obj = this.selectedTopic.listItems[key];
         listItems.push(obj.itemName);
       }
-      
+
       var newGameRef = this.games.push({
         gameName: UUID.UUID()
       });
@@ -230,15 +171,20 @@ export class SquaresComponent {
     return result;
   }
 
-  showImg(url: string, name: string){
+  showImg(url: string, itemRef: any){
     // return this.modal.open(ImgModalWindow,  overlayConfigFactory({ url: "google.com/stuff" }, BSModalContext));
-    var body = '<span>' + name + '</span><img width=100% src="' + url +'">';
-    this.modal.alert()
-        .size('lg')
-        .showClose(true)
-        .title('Cell Image')
-        .body(body)
-        .open();
+    // var body = '<span>' + name + '</span><img width=100% src="' + url +'">';
+    // this.modal.alert()
+    //     .size('lg')
+    //     .showClose(true)
+    //     .title('Cell Image')
+    //     .body(body)
+    //     .open();
+    return this.modal.open(ImgViewModalWindow,  overlayConfigFactory(
+      { 
+        fileUrl: url,
+        itemRef: itemRef
+      }, BSModalContext));
   }
 
   uploadFile($event) {
@@ -251,5 +197,10 @@ export class SquaresComponent {
     };
     var filename = file.name + UUID.UUID();
     firebase.storage().ref().child('images/' + filename).put(file, metadata).then(snapshot => console.log("FIGARO!"));
+  }
+
+  createGame(){
+    return this.modal.open(CreateGameModalWindow,  overlayConfigFactory(
+      {       }, BSModalContext));
   }
 }

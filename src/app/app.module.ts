@@ -5,6 +5,7 @@ import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 import { removeNgStyles, createNewHosts, createInputTransfer } from '@angularclass/hmr';
 import { AngularFireModule } from 'angularfire2';
+import { HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 
 /*
  * Platform and Environment providers/directives/pipes
@@ -22,6 +23,8 @@ import { XLarge } from './home/x-large';
 import { SquaresComponent } from './squares';
 import { CreationToolComponent } from './creation-tool';
 import { ImgModalWindow } from './modal-img/modal-img';
+import { ImgViewModalWindow } from './modal-view-entry/modal-view-entry';
+import { CreateGameModalWindow } from './modal-create-game/modal-create-game';
 
 import { ModalModule } from 'angular2-modal';
 import { BootstrapModalModule } from 'angular2-modal/plugins/bootstrap';
@@ -60,7 +63,9 @@ export const firebaseConfig = {
     XLarge,
     SquaresComponent,
     CreationToolComponent,
-    ImgModalWindow
+    ImgModalWindow,
+    ImgViewModalWindow,
+    CreateGameModalWindow
   ],
   imports: [ // import Angular's modules
     BrowserModule,
@@ -75,7 +80,11 @@ export const firebaseConfig = {
     ENV_PROVIDERS,
     APP_PROVIDERS
   ],
-  entryComponents: [ ImgModalWindow ]
+  entryComponents: [ 
+    ImgModalWindow,
+    ImgViewModalWindow,
+    CreateGameModalWindow
+  ]
 })
 export class AppModule {
   constructor(public appRef: ApplicationRef, public appState: AppState) {}
