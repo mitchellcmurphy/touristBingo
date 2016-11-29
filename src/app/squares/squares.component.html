@@ -66,13 +66,18 @@
 
     <br>
 
+            <!--[ngClass]="item.fileUrl ? 'square-image' : ''" 
+            [style.background-image]="item.fileUrl ? 'url(' + item.fileUrl + ')' : ''"-->
+
     <ul class="squares">
         <template ngFor let-item="$implicit" [ngForOf]="items | async">
-            <li class='square' [ngClass]="item.fileUrl ? 'square-image' : ''" [style.background-image]="item.fileUrl ? 'url(' + item.fileUrl + ')' : ''">
+            <li class='square' 
+            >
                 <span></span>
                 <input type="file" name="file" id="{{ item.$key }}" class="inputfile" (change)="prepareToUploadPicture($event, item)"/>
                 <label  *ngIf="!item.fileUrl" [attr.for]="item.$key">{{item.name}}</label>
                 <p *ngIf="item.fileUrl" (click)="showImg(item.fileUrl, item)">{{item.name}}</p>
+                <img *ngIf="item.fileUrl" (click)="showImg(item.fileUrl, item)" [src]="item.fileUrl">
             </li>
         </template>
     </ul>
