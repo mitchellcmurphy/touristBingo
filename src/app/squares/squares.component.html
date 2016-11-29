@@ -47,13 +47,12 @@
         <button (click)="addToGame(nameVal)">Add Box</button>
     </div>-->
 
-    <div *ngIf="(items | async)?.length>0">
+    <!--<div *ngIf="(items | async)?.length>0">
         <div *ngFor="let item of items | async">  
             <div class="square">
                 <div class="content">
                     <div class="bingo-table">
                         <div class="bingo-table-cell">
-                            <!--<span class="delete-cell" (click)="deleteCell(item)">x</span>-->
                             <input type="file" name="file" id="{{ item.$key }}" class="inputfile" (change)="prepareToUploadPicture($event, item)"/>
                             <label  *ngIf="!item.fileUrl" [attr.for]="item.$key">{{item.name}}</label>
                             <span *ngIf="item.fileUrl" (click)="showImg(item.fileUrl, item)">{{item.name}}</span>
@@ -63,6 +62,21 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>-->
+
     <br>
+
+    <ul class="squares">
+        <template ngFor let-item="$implicit" [ngForOf]="items | async">
+            <li class='square' [ngClass]="item.fileUrl ? 'square-image' : ''" [style.background-image]="item.fileUrl ? 'url(' + item.fileUrl + ')' : ''">
+                <span></span>
+                <input type="file" name="file" id="{{ item.$key }}" class="inputfile" (change)="prepareToUploadPicture($event, item)"/>
+                <label  *ngIf="!item.fileUrl" [attr.for]="item.$key">{{item.name}}</label>
+                <p *ngIf="item.fileUrl" (click)="showImg(item.fileUrl, item)">{{item.name}}</p>
+            </li>
+        </template>
+    </ul>
+
+    <br>
+
 </div>
