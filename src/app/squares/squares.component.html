@@ -3,31 +3,6 @@
 
     <button class="btn btn-primary" (click)=createGame()>New Game</button>
 
-    <!--<div class="dropdown">
-        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Select Topic
-        <span class="caret"></span></button>
-        <ul class="dropdown-menu">
-            <li *ngFor="let topic of topics | async">
-                <a (click)=setTopic(topic)>{{topic.topicName}}</a>
-            </li>
-        </ul>
-    </div>-->
-
-    <!--<div>{{selectedTopic && selectedTopic.topicName ? selectedTopic.topicName : "Select Topic"}}</div>-->
-
-    <!--<div>
-        <span>Enter number of cards to generate: </span>
-        <input type="text" name="Number of Cards" #cardsNumber>
-    </div>-->
-
-    <!--<button (click)=generateGame(cardsNumber)>Generate</button>-->
-
-    <!--<div class="enter-card-container">
-        <span>Enter a card name: </span>
-        <input type="text" name="Game Name" #gameName (keyup)="doneTypingGame($event)">
-        <button class="add-game" (click)="addGame(gameName)">Add Card</button>
-    </div>-->
-
     <div class="game-names-container">
         <div *ngFor="let game of games | async">
             <span class="game-name" (click)="switchGame(game)">
@@ -41,43 +16,19 @@
         <h2>{{currentGame && currentGame.gameName ? currentGame.gameName : ""}}</h2>
     </div>
 
-    <!--<div class="enter-subject-container">
-        <span>Enter a box subject: </span>
-        <input type="text" name="Name" #nameVal (keyup)="doneTyping($event)">
-        <button (click)="addToGame(nameVal)">Add Box</button>
-    </div>-->
-
-    <!--<div *ngIf="(items | async)?.length>0">
-        <div *ngFor="let item of items | async">  
-            <div class="square">
-                <div class="content">
-                    <div class="bingo-table">
-                        <div class="bingo-table-cell">
-                            <input type="file" name="file" id="{{ item.$key }}" class="inputfile" (change)="prepareToUploadPicture($event, item)"/>
-                            <label  *ngIf="!item.fileUrl" [attr.for]="item.$key">{{item.name}}</label>
-                            <span *ngIf="item.fileUrl" (click)="showImg(item.fileUrl, item)">{{item.name}}</span>
-                            <img *ngIf="item.fileUrl" src="../../assets/img/star.png" class="cell-img" (click)="showImg(item.fileUrl, item)">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>-->
-
     <br>
-
-            <!--[ngClass]="item.fileUrl ? 'square-image' : ''" 
-            [style.background-image]="item.fileUrl ? 'url(' + item.fileUrl + ')' : ''"-->
 
     <ul class="squares">
         <template ngFor let-item="$implicit" [ngForOf]="items | async">
             <li class='square' 
+            [ngClass]="item.fileUrl ? 'square-image' : ''" 
+            [style.background-image]="item.fileUrl ? 'url(' + item.fileUrl + ')' : ''"
             >
                 <span></span>
                 <input type="file" name="file" id="{{ item.$key }}" class="inputfile" (change)="prepareToUploadPicture($event, item)"/>
                 <label  *ngIf="!item.fileUrl" [attr.for]="item.$key">{{item.name}}</label>
                 <p *ngIf="item.fileUrl" (click)="showImg(item.fileUrl, item)">{{item.name}}</p>
-                <img *ngIf="item.fileUrl" (click)="showImg(item.fileUrl, item)" [src]="item.fileUrl">
+                <!--<img class="cell-img" *ngIf="item.fileUrl" (click)="showImg(item.fileUrl, item)" [src]="item.fileUrl">-->
             </li>
         </template>
     </ul>

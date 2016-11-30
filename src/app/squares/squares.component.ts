@@ -7,6 +7,7 @@ import { Modal, BSModalContext } from 'angular2-modal/plugins/bootstrap';
 import { ImgModalWindow, SetImgData } from '../modal-img/modal-img';
 import { ImgViewModalWindow, SetImgUrlData } from '../modal-view-entry/modal-view-entry';
 import { CreateGameModalWindow, SetNewGameData } from '../modal-create-game/modal-create-game';
+import { EXIF } from 'exif-js';
 
 /*
  * We're loading this component asynchronously
@@ -79,6 +80,10 @@ export class SquaresComponent {
   }
 
   prepareToUploadPicture($event, item: any) {
+    EXIF.getData($event.srcElement.files[0], function(){
+      var allMetaData = EXIF.getAllTags(this);
+      console.log(allMetaData);
+    });
     return this.modal.open(ImgModalWindow,  overlayConfigFactory(
       { 
         imgData: $event.srcElement.files[0],
