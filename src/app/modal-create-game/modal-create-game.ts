@@ -23,6 +23,7 @@ export class CreateGameModalWindow implements ModalComponent<SetNewGameData> {
   playersToAdd: any;
   playerInts: number[] = [1,2,3,4,5];
   numberOfPlayers: number;
+  public creatingGame = false;
 
   constructor(public dialog: DialogRef<SetNewGameData>, public af: AngularFire) {
     this.context = dialog.context;
@@ -65,6 +66,7 @@ export class CreateGameModalWindow implements ModalComponent<SetNewGameData> {
   }
 
   createAndCloseModal(){
+    this.creatingGame = true;
     console.log(this.selectedTopic.listItems);
     console.log("number to generate", this.numberOfPlayers);
     for(var i = 0; i < this.numberOfPlayers; i++){
@@ -88,18 +90,33 @@ export class CreateGameModalWindow implements ModalComponent<SetNewGameData> {
   }
 
   getRandom(arr, n) {
+    var chooser = this.randomNoRepeats(arr);
     var result = new Array(n),
-        len = arr.length,
-        taken = new Array(len);
+        len = arr.length;
     if (n > len)
         throw new RangeError("getRandom: more elements taken than available");
     while (n--) {
-        var x = Math.floor(Math.random() * len);
+        // var x = Math.floor(Math.random() * len);
+        // result[n] = {
+        //   name: arr[x in taken ? taken[x] : x]
+        // };
+        // taken[x] = --len;
         result[n] = {
-          name: arr[x in taken ? taken[x] : x]
+          name: chooser()
         };
-        taken[x] = --len;
     }
     return result;
   }
+
+  randomNoRepeats(array) {
+    var copy = array.slice(0);
+    return function() {
+      if (copy.length < 1) { copy = array.slice(0); }
+      var index = Math.floor(Math.random() * copy.length);
+      var item = copy[index];
+      copy.splice(index, 1);
+      return item;
+  };
+}
+
 }
