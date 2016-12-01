@@ -1,14 +1,79 @@
-#blue {
-  color: blue;
+.squares {
+    display: flex;
+    flex-flow: row wrap;
+    margin: 0;
+    padding: 0;
 }
 
 .square {
-    float:left;
     position: relative;
-    width: 16%;
-    padding-bottom : 30%; /* = width for a 1:1 aspect ratio */
-    margin:1.66%;
-    overflow:hidden;
+    width: 20%;
+    box-sizing: border-box;
+    list-style: none;
+    background-color: rgba(0,0,0,.05);
+}
+
+.square:after{
+    content: "";
+    display: block;
+    padding-top: 150%;
+}
+
+.square span{
+    position: absolute;
+    top: 33%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    width: 33%;
+    text-align: center;
+}
+
+.square span:after{
+    content: "";
+    display: block;
+    padding-top: 100%;
+}
+
+.square p{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    text-align: center;
+    font-size: 10px;
+    font-weight: bold;
+    line-height: 120%;
+    text-weight: bold;
+    padding: 5px;
+    margin: 0;
+    background-color: rgba(255,255,255,.65);
+}
+
+.square label{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    text-align: center;
+    font-size: 10px;
+    font-weight: bold;
+    line-height: 120%;
+    text-weight: bold;
+    padding: 5px;
+    margin: 0;
+    background-color: rgba(255,255,255,.65);
+}
+
+.square:nth-child(odd) {
+    background-color: rgba(0,0,0,.090);
+}
+
+.square-image {
+    background-image: url("../../assets/img/star.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .content {
@@ -51,11 +116,11 @@
 
 .cell-img{
   width:100%;
-  margin-top: -10px;
+  /*margin-top: -10px;*/
   position: absolute;
   z-index: -1;
-  left: 0;
-  top: 30px;
+  /*left: 0;*/
+  /*top: 30px;*/
   /*-ms-transform: rotate(90deg);
   -webkit-transform: rotate(90deg); 
   transform: rotate(90deg);*/
