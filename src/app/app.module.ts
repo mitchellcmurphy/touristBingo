@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 import { removeNgStyles, createNewHosts, createInputTransfer } from '@angularclass/hmr';
 import { AngularFireModule } from 'angularfire2';
 import { HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
+import { CollapseDirective } from 'ng2-bootstrap'
 
 /*
  * Platform and Environment providers/directives/pipes
@@ -65,7 +66,8 @@ export const firebaseConfig = {
     CreationToolComponent,
     ImgModalWindow,
     ImgViewModalWindow,
-    CreateGameModalWindow
+    CreateGameModalWindow,
+    CollapseDirective
   ],
   imports: [ // import Angular's modules
     BrowserModule,

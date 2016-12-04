@@ -39,4 +39,5 @@
     <div class="modal-footer">
         <button *ngIf=playersToAdd class="btn btn-primary" (click)=createAndCloseModal()>Create</button>
         <button class="btn btn-primary" (click)=closeModal()>Close</button>
+        <img *ngIf="creatingGame === true" width=100% src="../../assets/img/loading.gif">
     </div>

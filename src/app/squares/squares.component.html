@@ -1,5 +1,5 @@
 <div class="squares-card-container">
-    <h1>Squares</h1>
+    <h1>Current Game</h1>
 
     <button class="btn btn-primary" (click)=createGame()>New Game</button>
 
@@ -28,7 +28,7 @@
                 <input type="file" name="file" id="{{ item.$key }}" class="inputfile" (change)="prepareToUploadPicture($event, item)"/>
                 <label  *ngIf="!item.fileUrl" [attr.for]="item.$key">{{item.name}}</label>
                 <p *ngIf="item.fileUrl" (click)="showImg(item.fileUrl, item)">{{item.name}}</p>
-                <!--<img class="cell-img" *ngIf="item.fileUrl" (click)="showImg(item.fileUrl, item)" [src]="item.fileUrl">-->
+                <img class="cell-img" *ngIf="!item.fileUrl && item.uploading === true" src="../../assets/img/loading.gif">
             </li>
         </template>
     </ul>
