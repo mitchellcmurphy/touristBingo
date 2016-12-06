@@ -3,12 +3,6 @@ import { ActivatedRoute } from '@angular/router';
 import { AngularFire, FirebaseListObservable } from 'angularfire2';
 import { Modal } from 'angular2-modal/plugins/bootstrap';
 
-/*
- * We're loading this component asynchronously
- * We are using some magic with es6-promise-loader that will wrap the module with a Promise
- * see https://github.com/gdi2290/es6-promise-loader for more info
- */
-
 console.log('`Creation Tool` component loaded asynchronously');
 
 @Component({

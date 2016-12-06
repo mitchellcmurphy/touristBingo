@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 import { removeNgStyles, createNewHosts, createInputTransfer } from '@angularclass/hmr';
-import { AngularFireModule } from 'angularfire2';
+import { AngularFireModule, FIREBASE_PROVIDERS, AuthProviders, AuthMethods, firebaseAuthConfig } from 'angularfire2';
 import { HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 import { CollapseDirective } from 'ng2-bootstrap'
 
@@ -26,6 +26,8 @@ import { CreationToolComponent } from './creation-tool';
 import { ImgModalWindow } from './modal-img/modal-img';
 import { ImgViewModalWindow } from './modal-view-entry/modal-view-entry';
 import { CreateGameModalWindow } from './modal-create-game/modal-create-game';
+import { LoginComponent } from './login';
+import { AuthGuard } from './common/auth.guard'
 
 import { ModalModule } from 'angular2-modal';
 import { BootstrapModalModule } from 'angular2-modal/plugins/bootstrap';
@@ -51,6 +53,11 @@ export const firebaseConfig = {
   messagingSenderId: "889266554830"
 };
 
+export const myFirebaseAuthConfig = {
+  provider: AuthProviders.Google,
+  method: AuthMethods.Redirect
+}
+
 /**
  * `AppModule` is the main entry point into Angular2's bootstraping process
  */
@@ -67,20 +74,22 @@ export const firebaseConfig = {
     ImgModalWindow,
     ImgViewModalWindow,
     CreateGameModalWindow,
-    CollapseDirective
+    CollapseDirective,
+    LoginComponent
   ],
   imports: [ // import Angular's modules
     BrowserModule,
     FormsModule,
     HttpModule,
     RouterModule.forRoot(ROUTES, { useHash: true }),
-    AngularFireModule.initializeApp(firebaseConfig),
+    AngularFireModule.initializeApp(firebaseConfig, myFirebaseAuthConfig),
     ModalModule.forRoot(),
     BootstrapModalModule
   ],
   providers: [ // expose our Services and Providers into Angular's dependency injection
     ENV_PROVIDERS,
-    APP_PROVIDERS
+    APP_PROVIDERS,
+    AuthGuard
   ],
   entryComponents: [ 
     ImgModalWindow,

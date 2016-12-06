@@ -71,6 +71,7 @@
     "@angularclass/conventions-loader": "^1.0.2",
     "@angularclass/hmr": "~1.2.0",
     "@angularclass/hmr-loader": "~3.0.2",
+    "@types/firebase": "^2.4.30",
     "ag-grid": "3.3.x",
     "ag-grid-ng2": "3.3.x",
     "angular2-modal": "^2.0.2",
