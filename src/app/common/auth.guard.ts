@@ -1,19 +1,21 @@
 import { Injectable } from '@angular/core';
 import { Router, CanActivate } from '@angular/router';
 import { AngularFire } from 'angularfire2';
+import { UserService } from './user.service'
 
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-    user = {};
   constructor(
       private router: Router,
-      public af: AngularFire) {}
+      public af: AngularFire,
+      private userService: UserService) {}
 
   canActivate() {
     // Check to see if a user has a valid JWT
-    console.log("SHITS", this.af.auth);
-    if (this.user != {}) {
+    var user = this.userService.getUser();
+    console.log(user);
+    if (user && user.uid) {
       // If they do, return true and allow the user to load the home component
       return true;
     }

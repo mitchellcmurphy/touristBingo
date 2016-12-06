@@ -28,6 +28,7 @@ import { ImgViewModalWindow } from './modal-view-entry/modal-view-entry';
 import { CreateGameModalWindow } from './modal-create-game/modal-create-game';
 import { LoginComponent } from './login';
 import { AuthGuard } from './common/auth.guard'
+import { UserService } from './common/user.service'
 
 import { ModalModule } from 'angular2-modal';
 import { BootstrapModalModule } from 'angular2-modal/plugins/bootstrap';
@@ -89,7 +90,8 @@ export const myFirebaseAuthConfig = {
   providers: [ // expose our Services and Providers into Angular's dependency injection
     ENV_PROVIDERS,
     APP_PROVIDERS,
-    AuthGuard
+    AuthGuard,
+    UserService
   ],
   entryComponents: [ 
     ImgModalWindow,

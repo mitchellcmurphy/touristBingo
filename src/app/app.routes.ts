@@ -15,10 +15,10 @@ export const ROUTES: Routes = [
   { path: '',      component: HomeComponent },
   { path: 'home',  component: HomeComponent },
   { path: 'about', component: AboutComponent },
-  // { path: 'squares', component: SquaresComponent, canActivate: [AuthGuard] },
-  // { path: 'creation-tool', component: CreationToolComponent, canActivate: [AuthGuard] },
-  { path: 'squares', component: SquaresComponent },
-  { path: 'creation-tool', component: CreationToolComponent },
+  { path: 'squares', component: SquaresComponent, canActivate: [AuthGuard] },
+  { path: 'creation-tool', component: CreationToolComponent, canActivate: [AuthGuard] },
+  // { path: 'squares', component: SquaresComponent },
+  // { path: 'creation-tool', component: CreationToolComponent },
   { path: 'login', component: LoginComponent },
   {
     path: 'detail', loadChildren: () => System.import('./+detail').then((comp: any) => {
