@@ -1,1 +1,15 @@
-/*styles for home content only*/
+.game-names-container{
+  width: 400px;
+}
+
+.game-names-container div{
+  display: inline-block;
+  border: solid 1px red;
+  width: 150px;
+  padding: 5px;
+  margin: 5px;
+}
+
+.delete-game{
+  float: right;
+}

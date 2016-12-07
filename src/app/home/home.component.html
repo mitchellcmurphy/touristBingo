@@ -1,4 +1,12 @@
 <div class="card-container">
   <h1 *ngIf=displayName x-large class="sample-content">Welcome to Tourist Bingo {{displayName}}</h1>
   <button class="btn btn-primary" (click)=createGame()>New Game</button>
+  <div class="game-names-container">
+        <div *ngFor="let game of games | async">
+            <span class="game-name" (click)="switchGame(game)">
+                {{game.gameKey}}
+                <span class="delete-game" (click)=deleteGame(game)>x</span>
+            </span>
+        </div>
+    </div>
 </div>

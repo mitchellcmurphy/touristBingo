@@ -19,6 +19,7 @@ export class CreateGameModalWindow implements ModalComponent<SetNewGameData> {
   context: SetNewGameData;
   topics: FirebaseListObservable<any[]>;
   games: FirebaseListObservable<any[]>;
+  cards: FirebaseListObservable<any[]>;
   selectedTopic: any;
   playersToAdd: any;
   playerInts: number[] = [1,2,3,4,5];
@@ -43,7 +44,7 @@ export class CreateGameModalWindow implements ModalComponent<SetNewGameData> {
       console.log("Players to add", input)
       for(let i = 0; i < input; i++){
         this.playersToAdd.push({
-          playerName: "New Player"
+          email: "New Player"
         });
       }
     }
@@ -56,7 +57,7 @@ export class CreateGameModalWindow implements ModalComponent<SetNewGameData> {
       console.log("Players to add", input)
       for(let i = 0; i < input; i++){
         this.playersToAdd.push({
-          playerName: "Player " + (i + 1)
+          email: "Email " + (i + 1)
         });
       }
   }
@@ -69,6 +70,15 @@ export class CreateGameModalWindow implements ModalComponent<SetNewGameData> {
     this.creatingGame = true;
     console.log(this.selectedTopic.listItems);
     console.log("number to generate", this.numberOfPlayers);
+    var newGameRef = this.games.push({
+      gameOwner: this.context.owner
+    });
+    //Add the game key to the owner
+    this.af.database.list('/users/' + this.context.owner + '/games').push(
+      {
+        gameKey: newGameRef.key
+      }
+    );
     for(var i = 0; i < this.numberOfPlayers; i++){
       var listItems = [];
       for (var key in this.selectedTopic.listItems) {
@@ -76,14 +86,20 @@ export class CreateGameModalWindow implements ModalComponent<SetNewGameData> {
         listItems.push(obj.itemName);
       }
 
-      var newGameRef = this.games.push({
-        gameName: this.playersToAdd[i].playerName
-      });
+      var newCardRef = this.af.database.list('/games/' + newGameRef.key + '/cards').push(
+        {
+          cardOwnerEmail: this.playersToAdd[i].email
+        }
+      );
+
+      // var newCardRef = this.cards.push({
+      //   cardOwnerEmail: this.playersToAdd[i].email
+      // });
 
       var newItems = this.getRandom(listItems, 25);
 
       for(var j = 0; j < newItems.length; j++){
-        this.af.database.list('/games/' + newGameRef.key + '/items').push(newItems[j]);
+        this.af.database.list('/games/' + newGameRef.key + '/cards/' + newCardRef.key + '/squares').push(newItems[j]);
       }
     }
     this.dialog.close();
@@ -96,11 +112,6 @@ export class CreateGameModalWindow implements ModalComponent<SetNewGameData> {
     if (n > len)
         throw new RangeError("getRandom: more elements taken than available");
     while (n--) {
-        // var x = Math.floor(Math.random() * len);
-        // result[n] = {
-        //   name: arr[x in taken ? taken[x] : x]
-        // };
-        // taken[x] = --len;
         result[n] = {
           name: chooser()
         };
