@@ -7,7 +7,7 @@ import { AngularFire, FirebaseListObservable } from 'angularfire2';
 import { UUID } from 'angular2-uuid';
 
 export class SetNewGameData extends BSModalContext {
-
+  public owner: string
 }
 
 @Component({

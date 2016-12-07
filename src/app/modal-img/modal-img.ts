@@ -25,6 +25,7 @@ export class ImgModalWindow implements ModalComponent<SetImgData> {
   context: SetImgData;
   fileData: any;
   uploadingBox: string;
+  updateSub: any;
 
   constructor(public dialog: DialogRef<SetImgData>, public af: AngularFire) {
     this.context = dialog.context;
@@ -66,7 +67,7 @@ export class ImgModalWindow implements ModalComponent<SetImgData> {
     console.log('File available at', url);
 
     //HACK TODO FIX THIS WITH DATABASE LATER
-    this.af.database.list('/games', { preserveSnapshot: true})
+    this.updateSub = this.af.database.list('/games', { preserveSnapshot: true})
     .subscribe(snapshots=>{
         snapshots.forEach(snapshot => {
           console.log("snapshot", snapshot.key, snapshot.val().items);
@@ -84,5 +85,9 @@ export class ImgModalWindow implements ModalComponent<SetImgData> {
           }
         });
     })
+  }
+
+  ngOnDestroy() {
+    if(this.updateSub){this.updateSub.unsubscribe();}
   }
 }

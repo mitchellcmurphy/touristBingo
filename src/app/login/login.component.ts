@@ -9,22 +9,9 @@ console.log('`Login` component loaded asynchronously');
   templateUrl: './login.component.html'
 })
 export class LoginComponent {
-    user = {};
-
   constructor(
     public af: AngularFire,
-    public auth: FirebaseAuth) {
-        this.af.auth.subscribe(user => {
-            if(user) {
-                // user logged in
-                this.user = user;
-            }
-            else {
-                // user not logged in
-                this.user = {};
-            }
-        });
-  }
+    public auth: FirebaseAuth) {}
 
   ngOnInit() {
     console.log('hello `Login` component');

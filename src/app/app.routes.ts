@@ -12,8 +12,8 @@ import { DataResolver } from './app.resolver';
 
 
 export const ROUTES: Routes = [
-  { path: '',      component: HomeComponent },
-  { path: 'home',  component: HomeComponent },
+  { path: '',      component: HomeComponent, canActivate: [AuthGuard] },
+  { path: 'home',  component: HomeComponent, canActivate: [AuthGuard] },
   { path: 'about', component: AboutComponent },
   { path: 'squares', component: SquaresComponent, canActivate: [AuthGuard] },
   { path: 'creation-tool', component: CreationToolComponent, canActivate: [AuthGuard] },

@@ -4,6 +4,9 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { CollapseDirective } from 'ng2-bootstrap'
 import { AngularFire } from 'angularfire2';
+import { Router } from '@angular/router';
+import { UserService } from './common/user.service'
+
 
 import { AppState } from './app.service';
 
@@ -31,6 +34,7 @@ import { AppState } from './app.service';
       </div>
       <div class="navbar-collapse collapse sidebar-navbar-collapse">
         <ul class="nav navbar-nav">
+          <li><a href="#/home">User Home</a></li>
           <li><a href="#/squares">Game</a></li>
           <li><a href="#/creation-tool">Creation Tool</a></li>
           <li><a (click)=signOut()>Logout</a></li>
@@ -68,19 +72,21 @@ export class AppComponent {
 
   constructor(
     public appState: AppState,
-    public af: AngularFire) {
-      this.af.auth.subscribe(user => {
-            if(user) {
-                // user logged in
-                this.user = user;
-                console.log("Logged in", user);
-            }
-            else {
-                // user not logged in
-                this.user = {};
-                console.log("Not logged in");
-            }
-        });
+    public af: AngularFire,
+    private router: Router,
+    private userService: UserService) {
+      // this.af.auth.subscribe(user => {
+      //     if(user) {
+      //       // user logged in
+      //       this.user = user;
+      //       console.log("Logged in", user);
+      //     }
+      //     else {
+      //       // user not logged in
+      //       this.user = {};
+      //       console.log("Not logged in");
+      //     }
+      // });
   }
 
   ngOnInit() {
@@ -88,6 +94,7 @@ export class AppComponent {
   }
 
   signOut() {
-      this.af.auth.logout();
+    this.af.auth.logout();
+    this.router.navigate(['/login']);
   }
 }
