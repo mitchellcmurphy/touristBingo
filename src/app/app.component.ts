@@ -35,7 +35,7 @@ import { AppState } from './app.service';
       <div class="navbar-collapse collapse sidebar-navbar-collapse">
         <ul class="nav navbar-nav">
           <li><a href="#/home">User Home</a></li>
-          <li><a href="#/squares">Game</a></li>
+          <!--<li><a href="#/game">Game</a></li>-->
           <li><a href="#/creation-tool">Creation Tool</a></li>
           <li><a (click)=signOut()>Logout</a></li>
           <!--<li class="dropdown">

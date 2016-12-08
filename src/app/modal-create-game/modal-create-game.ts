@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { DialogRef, ModalComponent } from 'angular2-modal';
 import { BSModalContext } from 'angular2-modal/plugins/bootstrap';
@@ -20,13 +21,17 @@ export class CreateGameModalWindow implements ModalComponent<SetNewGameData> {
   topics: FirebaseListObservable<any[]>;
   games: FirebaseListObservable<any[]>;
   cards: FirebaseListObservable<any[]>;
+  gameName: string;
   selectedTopic: any;
   playersToAdd: any;
   playerInts: number[] = [1,2,3,4,5];
   numberOfPlayers: number;
   public creatingGame = false;
 
-  constructor(public dialog: DialogRef<SetNewGameData>, public af: AngularFire) {
+  constructor(
+    public dialog: DialogRef<SetNewGameData>, 
+    public af: AngularFire,
+    private router: Router) {
     this.context = dialog.context;
     this.topics = af.database.list('/topics');
     this.games = af.database.list('/games');
@@ -71,11 +76,13 @@ export class CreateGameModalWindow implements ModalComponent<SetNewGameData> {
     console.log(this.selectedTopic.listItems);
     console.log("number to generate", this.numberOfPlayers);
     var newGameRef = this.games.push({
+      gameName: this.gameName,
       gameOwner: this.context.owner
     });
     //Add the game key to the owner
     this.af.database.list('/users/' + this.context.owner + '/games').push(
       {
+        gameName: this.gameName,
         gameKey: newGameRef.key
       }
     );
@@ -102,7 +109,10 @@ export class CreateGameModalWindow implements ModalComponent<SetNewGameData> {
         this.af.database.list('/games/' + newGameRef.key + '/cards/' + newCardRef.key + '/squares').push(newItems[j]);
       }
     }
-    this.dialog.close();
+    setTimeout( () => {
+      this.dialog.close();
+      this.router.navigate(['/game/' + newGameRef.key]);
+    },1000);
   }
 
   getRandom(arr, n) {

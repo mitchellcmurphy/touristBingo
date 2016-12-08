@@ -1,0 +1,37 @@
+<div class="squares-card-container">
+    <h1>{{game?.name}}</h1>
+
+    <div class="game-names-container">
+        <div *ngFor="let card of cards | async">
+            <span class="game-name" (click)="switchCard(card)">
+                {{card.userName ? card.userName : card.cardOwnerEmail}}
+            </span>
+        </div>
+    </div>
+
+    <div class="game-name-header">
+        <!--<h2>{{currentCard && currentCard.cardOwnerEmail ? currentGame.gameName : ""}}</h2>-->
+        <!--<h2 *ngIf="!currentCard?.userName">{{currentCard?.cardOwnerEmail}}</h2>-->
+        <h2>{{currentCard?.userName ? currentCard.userName : currentCard?.cardOwnerEmail}}</h2>
+    </div>
+
+    <br>
+
+    <ul class="squares">
+        <template ngFor let-square="$implicit" [ngForOf]="squares | async">
+            <li class='square' 
+            [ngClass]="square.fileUrl ? 'square-image' : ''" 
+            [style.background-image]="square.fileUrl ? 'url(' + square.fileUrl + ')' : ''"
+            >
+                <span></span>
+                <input type="file" name="file" id="{{ square.$key }}" class="inputfile" (change)="prepareToUploadPicture($event, square)"/>
+                <label  *ngIf="!square.fileUrl" [attr.for]="square.$key">{{square.name}}</label>
+                <p *ngIf="square.fileUrl" (click)="showImg(square.fileUrl, square)">{{square.name}}</p>
+                <img class="cell-img" *ngIf="!square.fileUrl && square.uploading === true" src="../../assets/img/loading.gif">
+            </li>
+        </template>
+    </ul>
+
+    <br>
+
+</div>

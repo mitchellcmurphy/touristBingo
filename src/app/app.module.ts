@@ -21,7 +21,7 @@ import { HomeComponent } from './home';
 import { AboutComponent } from './about';
 import { NoContentComponent } from './no-content';
 import { XLarge } from './home/x-large';
-import { SquaresComponent } from './squares';
+import { GameComponent } from './game';
 import { CreationToolComponent } from './creation-tool';
 import { ImgModalWindow } from './modal-img/modal-img';
 import { ImgViewModalWindow } from './modal-view-entry/modal-view-entry';
@@ -70,7 +70,7 @@ export const myFirebaseAuthConfig = {
     HomeComponent,
     NoContentComponent,
     XLarge,
-    SquaresComponent,
+    GameComponent,
     CreationToolComponent,
     ImgModalWindow,
     ImgViewModalWindow,

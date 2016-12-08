@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { AngularFire, FirebaseListObservable } from 'angularfire2';
+import { Router } from '@angular/router';
 
 import { AppState } from '../app.service';
 import { Title } from './title';
@@ -28,7 +29,8 @@ export class HomeComponent {
     public title: Title,
     private userService: UserService,
     public modal: Modal,
-    public af: AngularFire) {
+    public af: AngularFire,
+    private router: Router) {
       this.user = userService.getUser();
       if(this.user){
         //Set some display values
@@ -47,5 +49,23 @@ export class HomeComponent {
       {
         owner: this.user.uid
       }, BSModalContext));
+  }
+
+  switchGame(game){
+    this.router.navigate(['/game/' + game.gameKey]);
+  }
+
+  deleteGame(game: any){
+    //Delete any associated files
+    var gameItems = this.af.database.list('/games/' + game.$key + '/cards', { preserveSnapshot: true});
+    console.log(game.cards);
+    for (var key in game.items) {
+      var obj = game.items[key];
+      console.log("Deleting object:", obj);
+      if(obj.fileName){
+        firebase.storage().ref().child('images/' + obj.fileName).delete().then(snapshot => console.log('file deleted'));
+      }
+    }
+    this.games.remove(game.$key).then(_ => console.log('game deleted!'));
   }
 }

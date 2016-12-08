@@ -7,10 +7,10 @@ import { AngularFire, FirebaseListObservable } from 'angularfire2';
 import { UUID } from 'angular2-uuid';
 
 export class SetImgData extends BSModalContext {
-  public url: string;
   public imgData: any;
-  public itemRef: any;
+  public squareRef: any;
   public gameKey: string;
+  public cardKey: string;
 }
 
 /**
@@ -42,13 +42,13 @@ export class ImgModalWindow implements ModalComponent<SetImgData> {
   }
 
   uploadAndCloseModal(){
-    var key = this.context.itemRef.$key;
+    var key = this.context.squareRef.$key;
     //Set the uploading gif
-    var itemsToUpdate = this.af.database.list('/games/' + this.context.gameKey + '/items');
+    var itemsToUpdate = this.af.database.list('/games/' + this.context.gameKey + '/cards/' + this.context.cardKey + '/squares');
     itemsToUpdate.update(key, {
       updating: true
     });
-    this.uploadingBox = this.context.itemRef.name;
+    this.uploadingBox = this.context.squareRef.name;
     var metadata = {
       'contentType': this.context.imgData.type
     };
@@ -67,16 +67,16 @@ export class ImgModalWindow implements ModalComponent<SetImgData> {
     console.log('File available at', url);
 
     //HACK TODO FIX THIS WITH DATABASE LATER
-    this.updateSub = this.af.database.list('/games', { preserveSnapshot: true})
+    this.updateSub = this.af.database.list('/games/' + this.context.gameKey + '/cards', { preserveSnapshot: true})
     .subscribe(snapshots=>{
         snapshots.forEach(snapshot => {
-          console.log("snapshot", snapshot.key, snapshot.val().items);
-          var gameKey = snapshot.key;
-          for (var key in snapshot.val().items) {
-            var obj = snapshot.val().items[key];
+          console.log("snapshot", snapshot.key, snapshot.val().squares);
+          var cardKey = snapshot.key;
+          for (var key in snapshot.val().squares) {
+            var obj = snapshot.val().squares[key];
             console.log("Current iterated obj", obj);
             if(obj.name === this.uploadingBox){
-              var itemsToUpdate = this.af.database.list('/games/' + gameKey + '/items');
+              var itemsToUpdate = this.af.database.list('/games/' + this.context.gameKey + '/cards/' + cardKey + '/squares');
               itemsToUpdate.update(key, {
                 fileUrl: url,
                 fileName: name

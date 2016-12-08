@@ -3,7 +3,12 @@
     </div>
 
     <div class="modal=body">
-        <div class="dropdown">
+        <div>
+            Give your game a name:
+            <input type="text" placeholder="My Game" (input)="gameName = $event.target.value">
+        </div>
+
+        <div class="dropdown" *ngIf="gameName">
             <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Select Topic
             <span class="caret"></span></button>
             <ul class="dropdown-menu">
@@ -13,7 +18,7 @@
             </ul>
         </div>
 
-        <div>Selected Topic: {{selectedTopic && selectedTopic.topicName ? selectedTopic.topicName : ""}}</div>
+        <div *ngIf="gameName">Selected Topic: {{selectedTopic && selectedTopic.topicName ? selectedTopic.topicName : ""}}</div>
 
         <div class="number-of-players" *ngIf=selectedTopic>
             Enter number of players (between 1 and 5):
