@@ -26,7 +26,7 @@
 
         <br>
 
-        <ul class="squares">
+        <ul class="squares" (swipeleft)="swipe($event.type, cards)" (swiperight)="swipe($event.type, cards)">
             <template ngFor let-square="$implicit" [ngForOf]="squares | async">
                 <li class='square' 
                 [ngClass]="square.fileUrl ? 'square-image' : ''" 
