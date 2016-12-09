@@ -126,8 +126,8 @@ export class CreateGameModalWindow implements ModalComponent<SetNewGameData> {
     var chooser = this.randomNoRepeats(arr);
     var result = new Array(n),
         len = arr.length;
-    if (n > len)
-        throw new RangeError("getRandom: more elements taken than available");
+    // if (n > len)
+    //     throw new RangeError("getRandom: more elements taken than available");
     while (n--) {
         result[n] = {
           name: chooser()
