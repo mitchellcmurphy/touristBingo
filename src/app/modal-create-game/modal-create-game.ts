@@ -7,8 +7,11 @@ import { BSModalContext } from 'angular2-modal/plugins/bootstrap';
 import { AngularFire, FirebaseListObservable } from 'angularfire2';
 import { UUID } from 'angular2-uuid';
 
+import { GameService } from '../common/game.service'
+
 export class SetNewGameData extends BSModalContext {
   public owner: string
+  public ownerEmail: string
 }
 
 @Component({
@@ -31,7 +34,8 @@ export class CreateGameModalWindow implements ModalComponent<SetNewGameData> {
   constructor(
     public dialog: DialogRef<SetNewGameData>, 
     public af: AngularFire,
-    private router: Router) {
+    private router: Router,
+    private gameService: GameService) {
     this.context = dialog.context;
     this.topics = af.database.list('/topics');
     this.games = af.database.list('/games');
@@ -60,7 +64,10 @@ export class CreateGameModalWindow implements ModalComponent<SetNewGameData> {
       var input = parseInt(numberOfPlayers);
       this.numberOfPlayers = input;
       console.log("Players to add", input)
-      for(let i = 0; i < input; i++){
+      this.playersToAdd.push({
+        email: this.context.ownerEmail
+      });
+      for(let i = 1; i < input; i++){
         this.playersToAdd.push({
           email: "Email " + (i + 1)
         });
@@ -80,12 +87,12 @@ export class CreateGameModalWindow implements ModalComponent<SetNewGameData> {
       gameOwner: this.context.owner
     });
     //Add the game key to the owner
-    this.af.database.list('/users/' + this.context.owner + '/games').push(
-      {
-        gameName: this.gameName,
-        gameKey: newGameRef.key
-      }
-    );
+    var gameData = {
+      gameName: this.gameName,
+      gameKey: newGameRef.key,
+      gameOwner: this.context.owner
+    }
+    this.af.database.list('/users/' + this.context.owner + '/games').push(gameData);
     for(var i = 0; i < this.numberOfPlayers; i++){
       var listItems = [];
       for (var key in this.selectedTopic.listItems) {

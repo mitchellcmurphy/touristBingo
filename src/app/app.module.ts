@@ -29,6 +29,7 @@ import { CreateGameModalWindow } from './modal-create-game/modal-create-game';
 import { LoginComponent } from './login';
 import { AuthGuard } from './common/auth.guard'
 import { UserService } from './common/user.service'
+import { GameService } from './common/game.service'
 
 import { ModalModule } from 'angular2-modal';
 import { BootstrapModalModule } from 'angular2-modal/plugins/bootstrap';
@@ -91,7 +92,8 @@ export const myFirebaseAuthConfig = {
     ENV_PROVIDERS,
     APP_PROVIDERS,
     AuthGuard,
-    UserService
+    UserService,
+    GameService
   ],
   entryComponents: [ 
     ImgModalWindow,

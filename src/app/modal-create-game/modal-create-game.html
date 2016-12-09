@@ -35,7 +35,7 @@
 
             <div *ngIf=playersToAdd class="player-inputs">
                 <div *ngFor="let player of playersToAdd; let i = index;">
-                    Player {{i + 1}}: <input type="text" placeholder="{{player.email}}" (input)="player.email = $event.target.value">
+                    Player {{i + 1}}: <input [readOnly]="i === 0" type="text" placeholder="{{player.email}}" (input)="player.email = $event.target.value">
                 </div>
             </div>
         </div>

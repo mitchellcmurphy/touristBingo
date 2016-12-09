@@ -5,7 +5,7 @@
         <div *ngFor="let game of games | async">
             <span class="game-name" (click)="switchGame(game)">
                 {{game.gameName}}
-                <span class="delete-game" (click)=deleteGame(game)>x</span>
+                <span class="delete-game" (click)="deleteGame(game, $event)">x</span>
             </span>
         </div>
     </div>

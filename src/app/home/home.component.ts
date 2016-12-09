@@ -47,7 +47,8 @@ export class HomeComponent {
   createGame(){
     return this.modal.open(CreateGameModalWindow,  overlayConfigFactory(
       {
-        owner: this.user.uid
+        owner: this.user.uid,
+        ownerEmail: this.user.auth.email
       }, BSModalContext));
   }
 
@@ -55,17 +56,39 @@ export class HomeComponent {
     this.router.navigate(['/game/' + game.gameKey]);
   }
 
-  deleteGame(game: any){
+  deleteGame(game: any, $event: any){
+    $event.stopPropagation();
     //Delete any associated files
-    var gameItems = this.af.database.list('/games/' + game.$key + '/cards', { preserveSnapshot: true});
-    console.log(game.cards);
-    for (var key in game.items) {
-      var obj = game.items[key];
-      console.log("Deleting object:", obj);
-      if(obj.fileName){
-        firebase.storage().ref().child('images/' + obj.fileName).delete().then(snapshot => console.log('file deleted'));
+    // var gameItems = this.af.database.list('/games/' + game.$key + '/cards', { preserveSnapshot: true});
+    // console.log(game);
+    // for (var key in game.items) {
+    //   var obj = game.items[key];
+    //   console.log("Deleting object:", obj);
+    //   if(obj.fileName){
+    //     firebase.storage().ref().child('images/' + obj.fileName).delete().then(snapshot => console.log('file deleted'));
+    //   }
+    // }
+    // this.games.remove(game.$key).then(_ => console.log('game deleted!'));
+    this.filesSub = this.af.database.list('/games/' + game.gameKey + '/files', { preserveSnapshot: true})
+    .subscribe(snapshots=>{
+      if(snapshots.length === 0){
+        console.log("We have no more files to delete, deleting game object");
+        this.af.database.list('/games').remove(game.gameKey).then(_ => console.log('game deleted from db!'));
       }
-    }
-    this.games.remove(game.$key).then(_ => console.log('game deleted!'));
+      console.log(snapshots);
+      snapshots.forEach(snapshot => {
+        if(snapshot.val().fileName){
+          let fileName = snapshot.val().fileName;
+          let fileKey = snapshot.key;
+          console.log("File found", fileName);
+          firebase.storage().ref().child('images/' + fileName).delete().then(snapshot => 
+          {
+            console.log('file deleted');
+            this.af.database.list('/games/' + game.gameKey + '/files').remove(fileKey).then(_ => console.log("file ref deleted"));
+          });
+        }
+      });
+    });
+    this.games.remove(game.$key).then(_ => console.log('game deleted from user!'));
   }
 }

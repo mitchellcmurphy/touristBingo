@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AngularFire, FirebaseAuth } from 'angularfire2';
+import { AngularFire, FirebaseAuth, AuthProviders } from 'angularfire2';
 
 console.log('`Login` component loaded asynchronously');
 
@@ -19,6 +19,12 @@ export class LoginComponent {
 
   login() {
     this.af.auth.login();
+  }
+
+  loginFacebook(){
+		this.af.auth.login({
+			provider: AuthProviders.Facebook
+    });
   }
 
   logout() {

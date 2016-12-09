@@ -4,6 +4,7 @@
 
     <div class="modal=body">
         <img *ngIf="fileData" width=100% [attr.src]="fileData" />
+        <img class="imgUpload" *ngIf="uploading === true" src="../../assets/img/imgLoading.gif">
     </div>
 
     <div class="modal-footer">
