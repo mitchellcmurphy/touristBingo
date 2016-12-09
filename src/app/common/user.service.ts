@@ -6,29 +6,29 @@ console.log('User Service loaded');
 
 @Injectable()
 export class UserService {
-	user = {};
+	user: any;
 	private redirectUrl: string;
 
 	constructor(
 		public af: AngularFire,
 		private router: Router,) {
-		this.af.auth.subscribe(user => {
-			if(user) {
-					// user logged in
-					this.user = user;
-					console.log("Logged in", user);
+			this.af.auth.subscribe(user => {
+				if(user) {
+						// user logged in
+						this.user = user;
+						console.log("Logged in", user);
 
-					//Check if user exists, if not add user
-					this.checkOrSetUser();
+						//Check if user exists, if not add user
+						this.checkOrSetUser();
 
-					this.router.navigate(['/home']);
-			}
-			else {
-					// user not logged in
-					this.user = {};
-					console.log("Not logged in");
-			}
-		});
+						this.redirectThePage();
+				}
+				else {
+						// user not logged in
+						this.user = null;
+						console.log("Not logged in");
+				}
+			});
 	}
 
   getUser(){
@@ -63,4 +63,18 @@ export class UserService {
 			}
 		});
   }
+
+	redirectThePage(){
+		let redirectUrl = localStorage.getItem('redirectUrl');
+		if(redirectUrl){
+			console.log("Redirecting to:", redirectUrl);
+			// localStorage.clear('redirectUrl');
+			this.router.navigate([redirectUrl]);
+		}
+		else{
+			this.router.navigate(['/home']);
+		}
+
+		// this.router.navigate(['/home']);
+	}
 }

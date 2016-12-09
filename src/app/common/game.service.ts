@@ -5,7 +5,7 @@ console.log('Game Service loaded');
 
 @Injectable()
 export class GameService {
-  game: FirebaseObjectObservable;
+  game: FirebaseObjectObservable<any>;
 	gameSub: any;
 
 	constructor(

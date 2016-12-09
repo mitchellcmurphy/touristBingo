@@ -27,6 +27,7 @@ export class GameComponent {
   gameId: string;
   gameData: any;
   updateUserSub: any;
+  paramsSub: any;
   authedForGame: boolean = false;
   authCleared: boolean = false;
 
@@ -38,16 +39,13 @@ export class GameComponent {
     public modal: Modal,
     private router: Router) {
       this.user = userService.getUser();
-      this.paramsSub = this.route.params.subscribe(params => {
-        this.ng
-      })
   }
 
   ngOnInit() {
     this.storageRef = firebase.storage().ref();
     console.log('hello `Game` component');
     // Subscribe to route params
-    this.sub = this.route.params.subscribe(params => {
+    this.paramsSub = this.route.params.subscribe(params => {
       let id = params['id'];
       this.cards = this.af.database.list('/games/' + id + '/cards');
       this.gameId = id;
@@ -147,5 +145,6 @@ export class GameComponent {
 
   ngOnDestroy() {
     if(this.updateUserSub){this.updateUserSub.unsubscribe();}
+    if(this.paramsSub){this.paramsSub.unsubscribe();}
   }
 }

@@ -69,7 +69,7 @@ export class HomeComponent {
     //   }
     // }
     // this.games.remove(game.$key).then(_ => console.log('game deleted!'));
-    this.filesSub = this.af.database.list('/games/' + game.gameKey + '/files', { preserveSnapshot: true})
+    var filesSub = this.af.database.list('/games/' + game.gameKey + '/files', { preserveSnapshot: true})
     .subscribe(snapshots=>{
       if(snapshots.length === 0){
         console.log("We have no more files to delete, deleting game object");

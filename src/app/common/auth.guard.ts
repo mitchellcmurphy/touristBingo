@@ -11,8 +11,8 @@ export class AuthGuard implements CanActivate {
       public af: AngularFire,
       private userService: UserService) {}
 
-  canActivate() {
-    // Check to see if a user has a valid JWT
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    // Check to see if there is a valid user
     var user = this.userService.getUser();
 		console.log("Current user", user);
     if (user && user.uid) {
@@ -21,6 +21,8 @@ export class AuthGuard implements CanActivate {
     }
 
     // If not, they redirect them to the login page and preserve the wanted path
+		console.log(state.url);
+		localStorage.setItem('redirectUrl', state.url);
     this.router.navigate(['/login']);
     return false;
   }
