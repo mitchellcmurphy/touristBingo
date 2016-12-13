@@ -1,101 +1,108 @@
+.squares-card-container{
+	color: #edc940;
+}
+
 .squares {
-    display: flex;
-    flex-flow: row wrap;
-    margin: 0;
-    padding: 0;
+	display: flex;
+	flex-flow: row wrap;
+	margin: 0;
+	padding: 0;
 }
 
 .square {
-    position: relative;
-    width: 20%;
-    box-sizing: border-box;
-    list-style: none;
-    background-color: rgba(0,0,0,.05);
+	position: relative;
+	width: 20%;
+	box-sizing: border-box;
+	list-style: none;
+	background-color: rgba(0,0,0,.05);
+	border: white 0.25px solid;
 }
 
 .square:after{
-    content: "";
-    display: block;
-    padding-top: 150%;
+	content: "";
+	display: block;
+	padding-top: 150%;
 }
 
 .square span{
-    position: absolute;
-    top: 33%;
-    left: 50%;
-    margin-right: -50%;
-    transform: translate(-50%, -50%);
-    width: 33%;
-    text-align: center;
+	position: absolute;
+	top: 33%;
+	left: 50%;
+	margin-right: -50%;
+	transform: translate(-50%, -50%);
+	width: 33%;
+	text-align: center;
 }
 
 .square span:after{
-    content: "";
-    display: block;
-    padding-top: 100%;
+	content: "";
+	display: block;
+	padding-top: 100%;
 }
 
 .square p{
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    text-align: center;
-    font-size: 10px;
-    font-weight: bold;
-    line-height: 120%;
-    text-weight: bold;
-    padding: 5px;
-    margin: 0;
-    background-color: rgba(255,255,255,.65);
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	text-align: center;
+	font-size: 10px;
+	font-weight: bold;
+	line-height: 120%;
+	text-weight: bold;
+	padding: 5px;
+	margin: 0;
+	color: #ffffff;
+	top: 40%;
 }
 
 .square label{
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    text-align: center;
-    font-size: 10px;
-    font-weight: bold;
-    line-height: 120%;
-    text-weight: bold;
-    padding: 5px;
-    margin: 0;
-    background-color: rgba(255,255,255,.65);
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	text-align: center;
+	font-size: 10px;
+	font-weight: bold;
+	line-height: 120%;
+	text-weight: bold;
+	padding: 5px;
+	margin: 0;
+	color: #ffffff;
+	top: 40%;
 }
 
 .square:nth-child(odd) {
-    background-color: rgba(0,0,0,.090);
+	background-color: rgba(0,0,0,.090);
 }
 
 .square-image {
-    background-image: url("../../assets/img/star.png");
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
+	background-image: url("../../assets/img/star.png");
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
 }
 
 .content {
-    position:absolute;
-    height:80%; /* = 100% - 2*10% padding */
-    width:90%; /* = 100% - 2*5% padding */
-    padding: 10% 5%;
-    border: black 1px solid;
+	position:absolute;
+	height:80%; /* = 100% - 2*10% padding */
+	width:90%; /* = 100% - 2*5% padding */
+	padding: 10% 5%;
+	border: black 1px solid;
 }
 
 .bingo-table{
-    display:table;
-    height:100%;
-    width:100%;
+	display:table;
+	height:100%;
+	width:100%;
 }
 
 .bingo-table-cell{
-    display:table-cell;
-    vertical-align:middle;
-    height:100%;
-    width:100%;
-    text-align: center;
+	display:table-cell;
+	vertical-align:middle;
+	height:100%;
+	width:100%;
+	text-align: center;
 }
 
 .inputfile {
