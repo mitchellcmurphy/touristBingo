@@ -7,10 +7,10 @@ import { AngularFire, FirebaseListObservable } from 'angularfire2';
 import { UUID } from 'angular2-uuid';
 
 export class SetImgData extends BSModalContext {
-  public url: string;
   public imgData: any;
-  public itemRef: any;
+  public squareRef: any;
   public gameKey: string;
+  public cardKey: string;
 }
 
 /**
@@ -18,13 +18,15 @@ export class SetImgData extends BSModalContext {
  */
 @Component({
   selector: 'modal-content',
-  styles: [``],
+  styleUrls: ['./modal-img.css'],
   templateUrl: './modal-img.html'
 })
 export class ImgModalWindow implements ModalComponent<SetImgData> {
   context: SetImgData;
   fileData: any;
   uploadingBox: string;
+  updateSub: any;
+  uploading: boolean = false;
 
   constructor(public dialog: DialogRef<SetImgData>, public af: AngularFire) {
     this.context = dialog.context;
@@ -41,13 +43,14 @@ export class ImgModalWindow implements ModalComponent<SetImgData> {
   }
 
   uploadAndCloseModal(){
-    var key = this.context.itemRef.$key;
+    var key = this.context.squareRef.$key;
     //Set the uploading gif
-    var itemsToUpdate = this.af.database.list('/games/' + this.context.gameKey + '/items');
-    itemsToUpdate.update(key, {
-      updating: true
-    });
-    this.uploadingBox = this.context.itemRef.name;
+    this.uploading = true;
+    // var itemsToUpdate = this.af.database.list('/games/' + this.context.gameKey + '/cards/' + this.context.cardKey + '/squares');
+    // itemsToUpdate.update(key, {
+    //   updating: true
+    // });
+    this.uploadingBox = this.context.squareRef.name;
     var metadata = {
       'contentType': this.context.imgData.type
     };
@@ -55,8 +58,6 @@ export class ImgModalWindow implements ModalComponent<SetImgData> {
     firebase.storage().ref().child('images/' + filename)
       .put(this.context.imgData, metadata)
         .then(snapshot => this.obtainUploadUrl(snapshot, key, filename));
-
-    this.dialog.close();
   }
 
   obtainUploadUrl(snapshot: any, key: string, name: string){
@@ -65,24 +66,37 @@ export class ImgModalWindow implements ModalComponent<SetImgData> {
     var url = snapshot.metadata.downloadURLs[0];
     console.log('File available at', url);
 
+    //Push the url to the files section of the game in the db
+    this.af.database.list('/games/' + this.context.gameKey + '/files').push(
+      {
+        fileName: name
+      }
+    );
+
     //HACK TODO FIX THIS WITH DATABASE LATER
-    this.af.database.list('/games', { preserveSnapshot: true})
+    this.updateSub = this.af.database.list('/games/' + this.context.gameKey + '/cards', { preserveSnapshot: true})
     .subscribe(snapshots=>{
-        snapshots.forEach(snapshot => {
-          console.log("snapshot", snapshot.key, snapshot.val().items);
-          var gameKey = snapshot.key;
-          for (var key in snapshot.val().items) {
-            var obj = snapshot.val().items[key];
-            console.log("Current iterated obj", obj);
-            if(obj.name === this.uploadingBox){
-              var itemsToUpdate = this.af.database.list('/games/' + gameKey + '/items');
-              itemsToUpdate.update(key, {
-                fileUrl: url,
-                fileName: name
-              });
-            }
+      snapshots.forEach(snapshot => {
+        // console.log("snapshot", snapshot.key, snapshot.val().squares);
+        var cardKey = snapshot.key;
+        for (var key in snapshot.val().squares) {
+          var obj = snapshot.val().squares[key];
+          // console.log("Current iterated obj", obj);
+          if(obj.name === this.uploadingBox){
+            var itemsToUpdate = this.af.database.list('/games/' + this.context.gameKey + '/cards/' + cardKey + '/squares');
+            itemsToUpdate.update(key, {
+              fileUrl: url,
+              fileName: name
+            });
           }
-        });
+        }
+      });
+      this.dialog.close();
     })
+  }
+
+  ngOnDestroy() {
+    if(this.updateSub){this.updateSub.unsubscribe();}
+    console.log("upload img modal destroyed");
   }
 }

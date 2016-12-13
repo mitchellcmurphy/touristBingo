@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { DialogRef, ModalComponent } from 'angular2-modal';
 import { BSModalContext } from 'angular2-modal/plugins/bootstrap';
@@ -6,8 +7,11 @@ import { BSModalContext } from 'angular2-modal/plugins/bootstrap';
 import { AngularFire, FirebaseListObservable } from 'angularfire2';
 import { UUID } from 'angular2-uuid';
 
-export class SetNewGameData extends BSModalContext {
+import { GameService } from '../common/game.service'
 
+export class SetNewGameData extends BSModalContext {
+  public owner: string
+  public ownerEmail: string
 }
 
 @Component({
@@ -19,13 +23,19 @@ export class CreateGameModalWindow implements ModalComponent<SetNewGameData> {
   context: SetNewGameData;
   topics: FirebaseListObservable<any[]>;
   games: FirebaseListObservable<any[]>;
+  cards: FirebaseListObservable<any[]>;
+  gameName: string;
   selectedTopic: any;
   playersToAdd: any;
   playerInts: number[] = [1,2,3,4,5];
   numberOfPlayers: number;
   public creatingGame = false;
 
-  constructor(public dialog: DialogRef<SetNewGameData>, public af: AngularFire) {
+  constructor(
+    public dialog: DialogRef<SetNewGameData>, 
+    public af: AngularFire,
+    private router: Router,
+    private gameService: GameService) {
     this.context = dialog.context;
     this.topics = af.database.list('/topics');
     this.games = af.database.list('/games');
@@ -43,7 +53,7 @@ export class CreateGameModalWindow implements ModalComponent<SetNewGameData> {
       console.log("Players to add", input)
       for(let i = 0; i < input; i++){
         this.playersToAdd.push({
-          playerName: "New Player"
+          email: "New Player"
         });
       }
     }
@@ -54,9 +64,12 @@ export class CreateGameModalWindow implements ModalComponent<SetNewGameData> {
       var input = parseInt(numberOfPlayers);
       this.numberOfPlayers = input;
       console.log("Players to add", input)
-      for(let i = 0; i < input; i++){
+      this.playersToAdd.push({
+        email: this.context.ownerEmail
+      });
+      for(let i = 1; i < input; i++){
         this.playersToAdd.push({
-          playerName: "Player " + (i + 1)
+          email: "Email " + (i + 1)
         });
       }
   }
@@ -69,6 +82,17 @@ export class CreateGameModalWindow implements ModalComponent<SetNewGameData> {
     this.creatingGame = true;
     console.log(this.selectedTopic.listItems);
     console.log("number to generate", this.numberOfPlayers);
+    var newGameRef = this.games.push({
+      gameName: this.gameName,
+      gameOwner: this.context.owner
+    });
+    //Add the game key to the owner
+    var gameData = {
+      gameName: this.gameName,
+      gameKey: newGameRef.key,
+      gameOwner: this.context.owner
+    }
+    this.af.database.list('/users/' + this.context.owner + '/games').push(gameData);
     for(var i = 0; i < this.numberOfPlayers; i++){
       var listItems = [];
       for (var key in this.selectedTopic.listItems) {
@@ -76,31 +100,35 @@ export class CreateGameModalWindow implements ModalComponent<SetNewGameData> {
         listItems.push(obj.itemName);
       }
 
-      var newGameRef = this.games.push({
-        gameName: this.playersToAdd[i].playerName
-      });
+      var newCardRef = this.af.database.list('/games/' + newGameRef.key + '/cards').push(
+        {
+          cardOwnerEmail: this.playersToAdd[i].email
+        }
+      );
+
+      // var newCardRef = this.cards.push({
+      //   cardOwnerEmail: this.playersToAdd[i].email
+      // });
 
       var newItems = this.getRandom(listItems, 25);
 
       for(var j = 0; j < newItems.length; j++){
-        this.af.database.list('/games/' + newGameRef.key + '/items').push(newItems[j]);
+        this.af.database.list('/games/' + newGameRef.key + '/cards/' + newCardRef.key + '/squares').push(newItems[j]);
       }
     }
-    this.dialog.close();
+    setTimeout( () => {
+      this.dialog.close();
+      this.router.navigate(['/game/' + newGameRef.key]);
+    },1000);
   }
 
   getRandom(arr, n) {
     var chooser = this.randomNoRepeats(arr);
     var result = new Array(n),
         len = arr.length;
-    if (n > len)
-        throw new RangeError("getRandom: more elements taken than available");
+    // if (n > len)
+    //     throw new RangeError("getRandom: more elements taken than available");
     while (n--) {
-        // var x = Math.floor(Math.random() * len);
-        // result[n] = {
-        //   name: arr[x in taken ? taken[x] : x]
-        // };
-        // taken[x] = --len;
         result[n] = {
           name: chooser()
         };
