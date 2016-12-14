@@ -195,7 +195,7 @@ export class GameComponent {
       this.currentCard = {
         $key: card.key,
         userName: card.val().userName,
-        photoUrl: card.val().photcoUrl
+        photoUrl: card.val().photoUrl
       }
       this.canUpload = this.user.auth.email == card.val().cardOwnerEmail;
     });
