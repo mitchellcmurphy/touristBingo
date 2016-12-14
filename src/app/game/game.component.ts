@@ -10,6 +10,7 @@ import { CreateGameModalWindow, SetNewGameData } from '../modal-create-game/moda
 import { UserService } from '../common/user.service'
 import { GameService } from '../common/game.service'
 import { CarouselModule } from 'ng2-bootstrap/ng2-bootstrap';
+declare var FB: any;
 
 console.log('`Game` component loaded asynchronously');
 
@@ -38,6 +39,7 @@ export class GameComponent {
     UP: 'swipeup',
     DOWN: 'swipedown'
   };
+  canUpload: boolean = true;
 
   constructor(
     public route: ActivatedRoute, 
@@ -81,12 +83,14 @@ export class GameComponent {
             console.log("Authed to play");
             this.cards.update(card.key,
             {
-              userName: this.user.auth.displayName
+              userName: this.user.auth.displayName,
+              photoUrl: this.getProfilePic(this.user)
             });
             this.squares = this.af.database.list('/games/' + this.gameId + '/cards/' + card.key + '/squares');
             this.currentCard = {
               $key: card.key,
-              userName: this.user.auth.displayName
+              userName: this.user.auth.displayName,
+              photoUrl: this.getProfilePic(this.user)
             }
             //If this isn't the game owner, add the game to the account
             //*Game is already in game owner's account*
@@ -123,7 +127,6 @@ export class GameComponent {
               gameName: gameObject.gameName,
               gameOwner: gameObject.gameOwner
             });
-            // userGames.unsubscribe();
           }
           userGames.unsubscribe();
         });
@@ -147,6 +150,8 @@ export class GameComponent {
     console.log(card);
     this.squares = this.af.database.list('/games/' + this.gameId + '/cards/' + card.$key + '/squares');
     this.currentCard = card;
+    this.currentCard.photoUrl = this.getProfilePic(this.user);
+    this.canUpload = this.user.auth.email == card.cardOwnerEmail;
   }
 
   showImg(url: string, itemRef: any){
@@ -161,35 +166,13 @@ export class GameComponent {
     console.log("swipe event", action, cards, this.cardIds.indexOf(this.currentCard.$key));
     var index = this.cardIds.indexOf(this.currentCard.$key);
     if(action === this.SWIPE_ACTION.LEFT && this.cardIds.indexOf(this.currentCard.$key) < this.cardIds.length - 1){
-      // index++;
-      // this.squares = this.af.database.list('/games/' + this.gameId + '/cards/' + this.cardIds[index] + '/squares');
-      // let cardSub = this.af.database.object('/games/' + this.gameId + '/cards/' + this.cardIds[index], { preserveSnapshot: true})
-      // .subscribe(card => {
-      //   this.currentCard = {
-      //     $key: card.key,
-      //     userName: card.val().userName
-      //   }
-      // });
       index++;
       this.switchCardServer(index);
     }
     else if(action === this.SWIPE_ACTION.RIGHT && this.cardIds.indexOf(this.currentCard.$key) > 0){
-      // index--;
-      // this.squares = this.af.database.list('/games/' + this.gameId + '/cards/' + this.cardIds[index] + '/squares');
-      // let cardSub = this.af.database.object('/games/' + this.gameId + '/cards/' + this.cardIds[index], { preserveSnapshot: true})
-      // .subscribe(card => {
-      //   this.currentCard = {
-      //     $key: card.key,
-      //     userName: card.val().userName
-      //   }
-      // });
       index--;
       this.switchCardServer(index);
     }
-    this.getFriends();
-    // else{
-    //   console.log("Do nothing");
-    // }
   }
 
   switchCardServer(index: number){
@@ -198,13 +181,29 @@ export class GameComponent {
     .subscribe(card => {
       this.currentCard = {
         $key: card.key,
-        userName: card.val().userName
+        userName: card.val().userName,
+        photoUrl: card.val().photoUrl
       }
+      this.canUpload = this.user.auth.email == card.val().cardOwnerEmail;
     });
   }
 
+  getProfilePic(user: any){
+    //Check google
+    if(user.google){
+      return user.google.photoURL;
+    }
+    else if(user.facebook){
+      return user.facebook.photoURL;
+    }
+  }
+
   getFriends() {
-    FB.api('/me/friends', function(response) {
+    FB.api('/me/friends', 
+            {
+              access_token : this.user.facebook.accessToken,
+              additional_parameter_foo : 'bar'
+            },function(response) {
       if(response.data) {
           console.log(response.data);
       } else {

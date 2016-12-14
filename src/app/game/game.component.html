@@ -19,9 +19,7 @@
         </div>
 
         <div class="game-name-header">
-            <!--<h2>{{currentCard && currentCard.cardOwnerEmail ? currentGame.gameName : ""}}</h2>-->
-            <!--<h2 *ngIf="!currentCard?.userName">{{currentCard?.cardOwnerEmail}}</h2>-->
-            <!--<img *ngIf=user.auth.photoURL [src]="user.auth.photoURL"/>-->
+            <img class="profile-pic" *ngIf=currentCard.photoUrl [src]=currentCard.photoUrl/>
             <h2>{{currentCard?.userName ? currentCard.userName : currentCard?.cardOwnerEmail}}</h2>
         </div>
 
@@ -33,7 +31,7 @@
                 [ngClass]="square.fileUrl ? 'square-image' : ''" 
                 [style.background-image]="square.fileUrl ? 'url(' + square.fileUrl + ')' : ''">
                     <span></span>
-                    <input type="file" name="file" id="{{ square.$key }}" class="inputfile" (change)="prepareToUploadPicture($event, square)"/>
+                    <input [disabled]="!canUpload" type="file" name="file" id="{{ square.$key }}" class="inputfile" (change)="prepareToUploadPicture($event, square)"/>
                     <label  *ngIf="!square.fileUrl" [attr.for]="square.$key">{{square.name}}</label>
                     <p *ngIf="square.fileUrl" (click)="showImg(square.fileUrl, square)">{{square.name}}</p>
                     <img class="cell-img" *ngIf="!square.fileUrl && square.uploading === true" src="../../assets/img/loading.gif">

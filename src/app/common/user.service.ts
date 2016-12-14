@@ -14,21 +14,21 @@ export class UserService {
 		private router: Router,) {
 			this.af.auth.subscribe(user => {
 				if(user) {
-						// user logged in
-						this.user = user;
-						console.log("Logged in", user);
+					// user logged in
+					this.user = user;
+					console.log("Logged in", user);
 
-						//Check if user exists, if not add user
-						this.checkOrSetUser();
+					//Check if user exists, if not add user
+					this.checkOrSetUser();
 
-						this.redirectThePage();
+					this.redirectThePage();
 				}
 				else {
-						// user not logged in
-						this.user = null;
-						console.log("Not logged in");
+					// user not logged in
+					this.user = null;
+					console.log("Not logged in");
 				}
-			});
+		});
 	}
 
   getUser(){
