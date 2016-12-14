@@ -75,7 +75,6 @@ export class GameComponent {
           console.log("snapshot", card.key, card.val().cardOwnerEmail, this.user.auth.email);
           if(this.cardIds && this.cardIds.indexOf(card.key) < 0){
             this.cardIds.push(card.key);
-            console.log("hubba hubba", this.cardIds);
           }
           if(card.val().cardOwnerEmail == this.user.auth.email){
             this.authedForGame = true;
@@ -159,13 +158,48 @@ export class GameComponent {
   }
 
   swipe(action = this.SWIPE_ACTION.LEFT, cards: any) {
-    console.log("swipe event", action, cards);
+    console.log("swipe event", action, cards, this.cardIds.indexOf(this.currentCard.$key));
+    var index = this.cardIds.indexOf(this.currentCard.$key);
     if(action === this.SWIPE_ACTION.LEFT && this.cardIds.indexOf(this.currentCard.$key) < this.cardIds.length - 1){
-
+      // index++;
+      // this.squares = this.af.database.list('/games/' + this.gameId + '/cards/' + this.cardIds[index] + '/squares');
+      // let cardSub = this.af.database.object('/games/' + this.gameId + '/cards/' + this.cardIds[index], { preserveSnapshot: true})
+      // .subscribe(card => {
+      //   this.currentCard = {
+      //     $key: card.key,
+      //     userName: card.val().userName
+      //   }
+      // });
+      index++;
+      this.switchCardServer(index);
     }
-    else{
-
+    else if(action === this.SWIPE_ACTION.RIGHT && this.cardIds.indexOf(this.currentCard.$key) > 0){
+      // index--;
+      // this.squares = this.af.database.list('/games/' + this.gameId + '/cards/' + this.cardIds[index] + '/squares');
+      // let cardSub = this.af.database.object('/games/' + this.gameId + '/cards/' + this.cardIds[index], { preserveSnapshot: true})
+      // .subscribe(card => {
+      //   this.currentCard = {
+      //     $key: card.key,
+      //     userName: card.val().userName
+      //   }
+      // });
+      index--;
+      this.switchCardServer(index);
     }
+    // else{
+    //   console.log("Do nothing");
+    // }
+  }
+
+  switchCardServer(index: number){
+    this.squares = this.af.database.list('/games/' + this.gameId + '/cards/' + this.cardIds[index] + '/squares');
+    let cardSub = this.af.database.object('/games/' + this.gameId + '/cards/' + this.cardIds[index], { preserveSnapshot: true})
+    .subscribe(card => {
+      this.currentCard = {
+        $key: card.key,
+        userName: card.val().userName
+      }
+    });
   }
 
   ngOnDestroy() {

@@ -21,7 +21,7 @@
         <div class="game-name-header">
             <!--<h2>{{currentCard && currentCard.cardOwnerEmail ? currentGame.gameName : ""}}</h2>-->
             <!--<h2 *ngIf="!currentCard?.userName">{{currentCard?.cardOwnerEmail}}</h2>-->
-            <img *ngIf=user.auth.photoURL [src]="user.auth.photoURL"/>
+            <!--<img *ngIf=user.auth.photoURL [src]="user.auth.photoURL"/>-->
             <h2>{{currentCard?.userName ? currentCard.userName : currentCard?.cardOwnerEmail}}</h2>
         </div>
 
