@@ -24,6 +24,7 @@ export class GameComponent {
   cards: FirebaseListObservable<any[]>;
   storageRef: any;
   currentCard: any;
+  cardIds: any[];
   user: any;
   gameId: string;
   gameData: any;
@@ -31,6 +32,12 @@ export class GameComponent {
   paramsSub: any;
   authedForGame: boolean = false;
   authCleared: boolean = false;
+  SWIPE_ACTION = { 
+    LEFT: 'swipeleft', 
+    RIGHT: 'swiperight',
+    UP: 'swipeup',
+    DOWN: 'swipedown'
+  };
 
   constructor(
     public route: ActivatedRoute, 
@@ -55,6 +62,8 @@ export class GameComponent {
       this.authedForGame = false;
       this.authCleared = false;
 
+      this.cardIds = [];
+
       //Update user info on card if logging in to game for first time
       this.updateUserInfo(id);
     });
@@ -64,6 +73,10 @@ export class GameComponent {
     this.updateUserSub = this.af.database.list('/games/' + id + '/cards', { preserveSnapshot: true}).subscribe(cards=>{
         cards.forEach(card => {
           console.log("snapshot", card.key, card.val().cardOwnerEmail, this.user.auth.email);
+          if(this.cardIds && this.cardIds.indexOf(card.key) < 0){
+            this.cardIds.push(card.key);
+            console.log("hubba hubba", this.cardIds);
+          }
           if(card.val().cardOwnerEmail == this.user.auth.email){
             this.authedForGame = true;
             console.log("Authed to play");
@@ -132,6 +145,7 @@ export class GameComponent {
   }
 
   switchCard(card: any){
+    console.log(card);
     this.squares = this.af.database.list('/games/' + this.gameId + '/cards/' + card.$key + '/squares');
     this.currentCard = card;
   }
@@ -142,6 +156,16 @@ export class GameComponent {
         fileUrl: url,
         itemRef: itemRef
       }, BSModalContext));
+  }
+
+  swipe(action = this.SWIPE_ACTION.LEFT, cards: any) {
+    console.log("swipe event", action, cards);
+    if(action === this.SWIPE_ACTION.LEFT && this.cardIds.indexOf(this.currentCard.$key) < this.cardIds.length - 1){
+
+    }
+    else{
+
+    }
   }
 
   ngOnDestroy() {
