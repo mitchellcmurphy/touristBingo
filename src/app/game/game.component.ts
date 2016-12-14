@@ -186,6 +186,7 @@ export class GameComponent {
       index--;
       this.switchCardServer(index);
     }
+    this.getFriends();
     // else{
     //   console.log("Do nothing");
     // }
@@ -198,6 +199,16 @@ export class GameComponent {
       this.currentCard = {
         $key: card.key,
         userName: card.val().userName
+      }
+    });
+  }
+
+  getFriends() {
+    FB.api('/me/friends', function(response) {
+      if(response.data) {
+          console.log(response.data);
+      } else {
+          alert("Error!");
       }
     });
   }
