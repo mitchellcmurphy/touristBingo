@@ -49,6 +49,7 @@ export class GameComponent {
     public modal: Modal,
     private router: Router) {
       this.user = userService.getUser();
+      console.log("Access token", userService.getUserAccessToken());
   }
 
   ngOnInit() {
@@ -81,16 +82,28 @@ export class GameComponent {
           if(card.val().cardOwnerEmail == this.user.auth.email){
             this.authedForGame = true;
             console.log("Authed to play");
-            this.cards.update(card.key,
-            {
-              userName: this.user.auth.displayName,
-              photoUrl: this.getProfilePic(this.user)
-            });
+            let photoUrl = card.val().photoUrl ? card.val().photoUrl : this.getProfilePic(this.user);
+            //The photoUrl is a shifty bastard, so update only if we have it
+            if(!card.val().photoUrl && photoUrl){
+              this.cards.update(card.key,
+              {
+                photoUrl: photoUrl
+              });
+            }
+            //Update the username if we don't have that too
+            if(!card.val().userName){
+              this.cards.update(card.key,
+              {
+                userName: this.user.auth.displayName
+              });
+            }
+            //Set the squares to show to be that of the current user
             this.squares = this.af.database.list('/games/' + this.gameId + '/cards/' + card.key + '/squares');
+            //Set info for the current card
             this.currentCard = {
               $key: card.key,
               userName: this.user.auth.displayName,
-              photoUrl: this.getProfilePic(this.user)
+              photoUrl: photoUrl
             }
             //If this isn't the game owner, add the game to the account
             //*Game is already in game owner's account*
@@ -182,7 +195,7 @@ export class GameComponent {
       this.currentCard = {
         $key: card.key,
         userName: card.val().userName,
-        photoUrl: card.val().photoUrl
+        photoUrl: card.val().photcoUrl
       }
       this.canUpload = this.user.auth.email == card.val().cardOwnerEmail;
     });
@@ -190,10 +203,10 @@ export class GameComponent {
 
   getProfilePic(user: any){
     //Check google
-    if(user.google){
+    if(user.google && user.google.photoURL){
       return user.google.photoURL;
     }
-    else if(user.facebook){
+    else if(user.facebook && user.facebook.photoURL){
       return user.facebook.photoURL;
     }
   }

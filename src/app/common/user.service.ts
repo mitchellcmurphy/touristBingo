@@ -18,6 +18,9 @@ export class UserService {
 					this.user = user;
 					console.log("Logged in", user);
 
+					//If we are first logging in let's grab the access token
+					this.setUserAccessToken();					
+
 					//Check if user exists, if not add user
 					this.checkOrSetUser();
 
@@ -35,19 +38,17 @@ export class UserService {
 		return this.user;
   }
 
-  getRedirectUrl(){
-		return this.redirectUrl;
-  }
+	getUserAccessToken(){
+		return window.localStorage.getItem( this.user.uid );
+	}
 
-  setRedirectUrl(url: string){
-		if(url){
-			this.redirectUrl = url;
+	setUserAccessToken(){
+		//Facebook
+		if(this.user.facebook && this.user.facebook.accessToken){
+			window.localStorage.setItem( this.user.uid, this.user.facebook.accessToken );
+			window.location.reload();
 		}
-  }
-
-  clearRedirectUrl(){
-		this.redirectUrl = null;
-  }
+	}
 
   checkOrSetUser(){
 		this.af.database.object(`/users/${this.user.uid}`).subscribe((obj) => {

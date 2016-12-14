@@ -19,7 +19,7 @@
         </div>
 
         <div class="game-name-header">
-            <img class="profile-pic" *ngIf=currentCard.photoUrl [src]=currentCard.photoUrl/>
+            <img class="profile-pic" *ngIf="currentCard && currentCard.photoUrl" [src]=currentCard.photoUrl/>
             <h2>{{currentCard?.userName ? currentCard.userName : currentCard?.cardOwnerEmail}}</h2>
         </div>
 
