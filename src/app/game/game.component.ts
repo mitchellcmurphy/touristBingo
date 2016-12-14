@@ -9,6 +9,7 @@ import { ImgViewModalWindow, SetImgUrlData } from '../modal-view-entry/modal-vie
 import { CreateGameModalWindow, SetNewGameData } from '../modal-create-game/modal-create-game';
 import { UserService } from '../common/user.service'
 import { GameService } from '../common/game.service'
+import { CarouselModule } from 'ng2-bootstrap/ng2-bootstrap';
 
 console.log('`Game` component loaded asynchronously');
 
