@@ -11,6 +11,7 @@ import { UserService } from '../common/user.service'
 import { GameService } from '../common/game.service'
 import { CarouselModule } from 'ng2-bootstrap/ng2-bootstrap';
 declare var FB: any;
+declare var Hammer: any;
 
 console.log('`Game` component loaded asynchronously');
 
@@ -35,11 +36,11 @@ export class GameComponent {
   authCleared: boolean = false;
   SWIPE_ACTION = { 
     LEFT: 'swipeleft', 
-    RIGHT: 'swiperight',
-    UP: 'swipeup',
-    DOWN: 'swipedown'
+    RIGHT: 'swiperight'
   };
   canUpload: boolean = true;
+  //Remember cards start at 0
+  cardCenter: number = 12;
 
   constructor(
     public route: ActivatedRoute, 
@@ -70,6 +71,28 @@ export class GameComponent {
       //Update user info on card if logging in to game for first time
       this.updateUserInfo(id);
     });
+  }
+
+  ngAfterViewInit(){
+    //Allow scrolling on the list elements
+    setTimeout(() => {
+      var swipeElement = document.getElementById('squares-list');
+      var h = new Hammer(swipeElement, {
+        touchAction : 'auto'
+      });
+
+      h.get( 'pan' ).set({
+        direction   : Hammer.DIRECTION_HORIZONTAL,
+      });
+
+      // h.on('panstart pandown panup panend', function(event){
+      //   return;
+      // });
+      h.on('swiperight swipeleft', event => {
+        console.log("swipe event", event);
+        this.swipe(event);
+      });
+    }, 3000);
   }
 
   updateUserInfo(id: string){
@@ -175,8 +198,9 @@ export class GameComponent {
       }, BSModalContext));
   }
 
-  swipe(action = this.SWIPE_ACTION.LEFT, cards: any) {
-    console.log("swipe event", action, cards, this.cardIds.indexOf(this.currentCard.$key));
+  swipe(event) {
+    let action = event.type;
+    console.log("swipe event", action, this.cardIds.indexOf(this.currentCard.$key));
     var index = this.cardIds.indexOf(this.currentCard.$key);
     if(action === this.SWIPE_ACTION.LEFT && this.cardIds.indexOf(this.currentCard.$key) < this.cardIds.length - 1){
       index++;

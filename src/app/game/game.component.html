@@ -25,16 +25,17 @@
 
         <br>
 
-        <ul class="squares" (swipeleft)="swipe($event.type, cards)" (swiperight)="swipe($event.type, cards)">
-            <template ngFor let-square="$implicit" [ngForOf]="squares | async">
+        <ul id="squares-list" class="squares">
+            <template ngFor let-square="$implicit" let-i="index" [ngForOf]="squares | async">
                 <li class='square' 
                 [ngClass]="square.fileUrl ? 'square-image' : ''" 
                 [style.background-image]="square.fileUrl ? 'url(' + square.fileUrl + ')' : ''">
                     <span></span>
                     <input [disabled]="!canUpload" type="file" name="file" id="{{ square.$key }}" class="inputfile" (change)="prepareToUploadPicture($event, square)"/>
-                    <label  *ngIf="!square.fileUrl" [attr.for]="square.$key">{{square.name}}</label>
-                    <p *ngIf="square.fileUrl" (click)="showImg(square.fileUrl, square)">{{square.name}}</p>
+                    <label  *ngIf="!square.fileUrl && i != cardCenter" [attr.for]="square.$key">{{square.name}}</label>
+                    <p *ngIf="square.fileUrl && i != cardCenter" (click)="showImg(square.fileUrl, square)">{{square.name}}</p>
                     <img class="cell-img" *ngIf="!square.fileUrl && square.uploading === true" src="../../assets/img/loading.gif">
+                    <p *ngIf="i == cardCenter">FREE</p>
                 </li>
             </template>
         </ul>
