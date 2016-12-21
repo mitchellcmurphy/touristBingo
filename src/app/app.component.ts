@@ -92,6 +92,9 @@ export class AppComponent {
       if(val.url != '/login'){
         this.showMenu = true;
       }
+      else{
+        this.showMenu = false;
+      }
     });
   }
 
