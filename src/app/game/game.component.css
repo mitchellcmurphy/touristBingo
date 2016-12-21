@@ -44,23 +44,7 @@
 	padding-top: 100%;
 }
 
-.square p{
-	position: absolute;
-	bottom: 0;
-	right: 0;
-	left: 0;
-	text-align: center;
-	font-size: 10px;
-	font-weight: bold;
-	line-height: 120%;
-	text-weight: bold;
-	padding: 5px;
-	margin: 0;
-	color: #ffffff;
-	top: 40%;
-}
-
-.square label{
+.square p, .square label{
 	position: absolute;
 	bottom: 0;
 	right: 0;
