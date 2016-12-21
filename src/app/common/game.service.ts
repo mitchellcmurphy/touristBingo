@@ -7,11 +7,6 @@ console.log('Game Service loaded');
 export class GameService {
   game: FirebaseObjectObservable<any>;
 	gameSub: any;
-	winLines: [
-		{
-			row1:[0,1,2,3,4]
-		}
-	]
 
 	constructor(
 		public af: AngularFire
