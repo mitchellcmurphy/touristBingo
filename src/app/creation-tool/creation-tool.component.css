@@ -2,6 +2,10 @@
   color: blue;
 }
 
+.squares-card-container{
+  color: #edc940;
+}
+
 .square {
     float:left;
     position: relative;

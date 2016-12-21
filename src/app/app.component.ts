@@ -22,7 +22,7 @@ import { AppState } from './app.service';
   ],
   template: `
   <div class="sidebar-nav">
-    <div class="navbar navbar-default" role="navigation">
+    <div class="navbar navbar-default" role="navigation" *ngIf="showMenu === true">
       <div class="navbar-header">
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-navbar-collapse">
           <span class="sr-only">Toggle navigation</span>
@@ -55,12 +55,6 @@ import { AppState } from './app.service';
     </main>
 
     <span defaultOverlayTarget></span>
-
-    <!--<footer>
-      <div>
-        Footer Stuffs
-      </div>
-    </footer>-->
   `
 })
 export class AppComponent {
@@ -69,6 +63,8 @@ export class AppComponent {
   url = 'https://twitter.com/AngularClass';
   public isCollapsed: boolean = true
   user = {};
+  routerSub: any;
+  public showMenu: boolean = false;
 
   constructor(
     public appState: AppState,
@@ -91,6 +87,15 @@ export class AppComponent {
 
   ngOnInit() {
     console.log('Initial App State', this.appState.state);
+
+    this.routerSub = this.router.events.subscribe((val) => {
+      if(val.url != '/login'){
+        this.showMenu = true;
+      }
+      else{
+        this.showMenu = false;
+      }
+    });
   }
 
   signOut() {

@@ -14,40 +14,41 @@ export class UserService {
 		private router: Router,) {
 			this.af.auth.subscribe(user => {
 				if(user) {
-						// user logged in
-						this.user = user;
-						console.log("Logged in", user);
+					// user logged in
+					this.user = user;
+					console.log("Logged in", user);
 
-						//Check if user exists, if not add user
-						this.checkOrSetUser();
+					//If we are first logging in let's grab the access token
+					this.setUserAccessToken();					
 
-						this.redirectThePage();
+					//Check if user exists, if not add user
+					this.checkOrSetUser();
+
+					this.redirectThePage();
 				}
 				else {
-						// user not logged in
-						this.user = null;
-						console.log("Not logged in");
+					// user not logged in
+					this.user = null;
+					console.log("Not logged in");
 				}
-			});
+		});
 	}
 
   getUser(){
 		return this.user;
   }
 
-  getRedirectUrl(){
-		return this.redirectUrl;
-  }
+	getUserAccessToken(){
+		return window.localStorage.getItem( this.user.uid );
+	}
 
-  setRedirectUrl(url: string){
-		if(url){
-			this.redirectUrl = url;
+	setUserAccessToken(){
+		//Facebook
+		if(this.user.facebook && this.user.facebook.accessToken){
+			window.localStorage.setItem( this.user.uid, this.user.facebook.accessToken );
+			window.location.reload();
 		}
-  }
-
-  clearRedirectUrl(){
-		this.redirectUrl = null;
-  }
+	}
 
   checkOrSetUser(){
 		this.af.database.object(`/users/${this.user.uid}`).subscribe((obj) => {

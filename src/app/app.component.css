@@ -2,6 +2,31 @@ html, body{
   min-height: 100%;
   font-family: Arial, Helvetica, sans-serif;
   margin: 0 0 100px;
+  background-color: #213A72 !important;
+}
+
+.navbar{
+  background-color: #213A72 !important;
+}
+
+.navbar-default .navbar-toggle{
+  border-color: transparent !important;
+}
+
+.navbar-default{
+  border-color: transparent !important;
+}
+
+.navbar-default .navbar-toggle .icon-bar {
+  background-color: #edc940 !important;
+}
+
+.navbar-default .navbar-brand {
+  color: #edc940 !important;
+}
+
+.navbar-default .navbar-nav>li>a {
+    color: #edc940 !important;
 }
 
 span.active {

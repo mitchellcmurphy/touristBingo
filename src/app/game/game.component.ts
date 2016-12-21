@@ -9,6 +9,9 @@ import { ImgViewModalWindow, SetImgUrlData } from '../modal-view-entry/modal-vie
 import { CreateGameModalWindow, SetNewGameData } from '../modal-create-game/modal-create-game';
 import { UserService } from '../common/user.service'
 import { GameService } from '../common/game.service'
+import { CarouselModule } from 'ng2-bootstrap/ng2-bootstrap';
+declare var FB: any;
+declare var Hammer: any;
 
 console.log('`Game` component loaded asynchronously');
 
@@ -23,6 +26,7 @@ export class GameComponent {
   cards: FirebaseListObservable<any[]>;
   storageRef: any;
   currentCard: any;
+  cardIds: any[];
   user: any;
   gameId: string;
   gameData: any;
@@ -30,6 +34,13 @@ export class GameComponent {
   paramsSub: any;
   authedForGame: boolean = false;
   authCleared: boolean = false;
+  SWIPE_ACTION = { 
+    LEFT: 'swipeleft', 
+    RIGHT: 'swiperight'
+  };
+  canUpload: boolean = true;
+  //Remember cards start at 0
+  cardCenter: number = 12;
 
   constructor(
     public route: ActivatedRoute, 
@@ -39,6 +50,7 @@ export class GameComponent {
     public modal: Modal,
     private router: Router) {
       this.user = userService.getUser();
+      console.log("Access token", userService.getUserAccessToken());
   }
 
   ngOnInit() {
@@ -54,26 +66,67 @@ export class GameComponent {
       this.authedForGame = false;
       this.authCleared = false;
 
+      this.cardIds = [];
+
       //Update user info on card if logging in to game for first time
       this.updateUserInfo(id);
     });
+  }
+
+  ngAfterViewInit(){
+    //Allow scrolling on the list elements
+    setTimeout(() => {
+      var swipeElement = document.getElementById('squares-list');
+      var h = new Hammer(swipeElement, {
+        touchAction : 'auto'
+      });
+
+      h.get( 'pan' ).set({
+        direction   : Hammer.DIRECTION_HORIZONTAL,
+      });
+
+      // h.on('panstart pandown panup panend', function(event){
+      //   return;
+      // });
+      h.on('swiperight swipeleft', event => {
+        console.log("swipe event", event);
+        this.swipe(event);
+      });
+    }, 3000);
   }
 
   updateUserInfo(id: string){
     this.updateUserSub = this.af.database.list('/games/' + id + '/cards', { preserveSnapshot: true}).subscribe(cards=>{
         cards.forEach(card => {
           console.log("snapshot", card.key, card.val().cardOwnerEmail, this.user.auth.email);
+          if(this.cardIds && this.cardIds.indexOf(card.key) < 0){
+            this.cardIds.push(card.key);
+          }
           if(card.val().cardOwnerEmail == this.user.auth.email){
             this.authedForGame = true;
             console.log("Authed to play");
-            this.cards.update(card.key,
-            {
-              userName: this.user.auth.displayName
-            });
+            let photoUrl = card.val().photoUrl ? card.val().photoUrl : this.getProfilePic(this.user);
+            //The photoUrl is a shifty bastard, so update only if we have it
+            if(!card.val().photoUrl && photoUrl){
+              this.cards.update(card.key,
+              {
+                photoUrl: photoUrl
+              });
+            }
+            //Update the username if we don't have that too
+            if(!card.val().userName){
+              this.cards.update(card.key,
+              {
+                userName: this.user.auth.displayName
+              });
+            }
+            //Set the squares to show to be that of the current user
             this.squares = this.af.database.list('/games/' + this.gameId + '/cards/' + card.key + '/squares');
+            //Set info for the current card
             this.currentCard = {
               $key: card.key,
-              userName: this.user.auth.displayName
+              userName: this.user.auth.displayName,
+              photoUrl: photoUrl
             }
             //If this isn't the game owner, add the game to the account
             //*Game is already in game owner's account*
@@ -110,7 +163,6 @@ export class GameComponent {
               gameName: gameObject.gameName,
               gameOwner: gameObject.gameOwner
             });
-            // userGames.unsubscribe();
           }
           userGames.unsubscribe();
         });
@@ -131,8 +183,11 @@ export class GameComponent {
   }
 
   switchCard(card: any){
+    console.log(card);
     this.squares = this.af.database.list('/games/' + this.gameId + '/cards/' + card.$key + '/squares');
     this.currentCard = card;
+    this.currentCard.photoUrl = this.getProfilePic(this.user);
+    this.canUpload = this.user.auth.email == card.cardOwnerEmail;
   }
 
   showImg(url: string, itemRef: any){
@@ -141,6 +196,57 @@ export class GameComponent {
         fileUrl: url,
         itemRef: itemRef
       }, BSModalContext));
+  }
+
+  swipe(event) {
+    let action = event.type;
+    console.log("swipe event", action, this.cardIds.indexOf(this.currentCard.$key));
+    var index = this.cardIds.indexOf(this.currentCard.$key);
+    if(action === this.SWIPE_ACTION.LEFT && this.cardIds.indexOf(this.currentCard.$key) < this.cardIds.length - 1){
+      index++;
+      this.switchCardServer(index);
+    }
+    else if(action === this.SWIPE_ACTION.RIGHT && this.cardIds.indexOf(this.currentCard.$key) > 0){
+      index--;
+      this.switchCardServer(index);
+    }
+  }
+
+  switchCardServer(index: number){
+    this.squares = this.af.database.list('/games/' + this.gameId + '/cards/' + this.cardIds[index] + '/squares');
+    let cardSub = this.af.database.object('/games/' + this.gameId + '/cards/' + this.cardIds[index], { preserveSnapshot: true})
+    .subscribe(card => {
+      this.currentCard = {
+        $key: card.key,
+        userName: card.val().userName,
+        photoUrl: card.val().photoUrl
+      }
+      this.canUpload = this.user.auth.email == card.val().cardOwnerEmail;
+    });
+  }
+
+  getProfilePic(user: any){
+    //Check google
+    if(user.google && user.google.photoURL){
+      return user.google.photoURL;
+    }
+    else if(user.facebook && user.facebook.photoURL){
+      return user.facebook.photoURL;
+    }
+  }
+
+  getFriends() {
+    FB.api('/me/friends', 
+            {
+              access_token : this.user.facebook.accessToken,
+              additional_parameter_foo : 'bar'
+            },function(response) {
+      if(response.data) {
+          console.log(response.data);
+      } else {
+          alert("Error!");
+      }
+    });
   }
 
   ngOnDestroy() {

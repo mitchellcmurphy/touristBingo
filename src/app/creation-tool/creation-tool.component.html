@@ -11,7 +11,7 @@
         <div *ngFor="let topic of topics | async">
             <span class="game-name" (click)="switchTopic(topic)">
                 {{topic.topicName}}
-                <span class="delete-game" (click)=deleteTopic(topic)>x</span>
+                <!--<span class="delete-game" (click)=deleteTopic(topic)>x</span>-->
             </span>
         </div>
     </div>

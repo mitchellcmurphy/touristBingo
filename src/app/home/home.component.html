@@ -2,11 +2,14 @@
   <h1 *ngIf=displayName x-large class="sample-content">Welcome to Tourist Bingo {{displayName}}</h1>
   <button class="btn btn-primary" (click)=createGame()>New Game</button>
   <div class="game-names-container">
-        <div *ngFor="let game of games | async">
-            <span class="game-name" (click)="switchGame(game)">
-                {{game.gameName}}
-                <span class="delete-game" (click)="deleteGame(game, $event)">x</span>
-            </span>
-        </div>
+		<div *ngIf=games>Game History</div>
+		<template ngFor let-game="$implicit" [ngForOf]="games | async">
+			<div class="game-block" (click)="switchGame(game)">
+					<span class="game-name">
+							{{game.gameName}}
+							<span class="delete-game" (click)="deleteGame(game, $event)">x</span>
+					</span>
+			</div>
+		</template>
     </div>
 </div>

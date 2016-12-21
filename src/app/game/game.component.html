@@ -19,24 +19,23 @@
         </div>
 
         <div class="game-name-header">
-            <!--<h2>{{currentCard && currentCard.cardOwnerEmail ? currentGame.gameName : ""}}</h2>-->
-            <!--<h2 *ngIf="!currentCard?.userName">{{currentCard?.cardOwnerEmail}}</h2>-->
+            <img class="profile-pic" *ngIf="currentCard && currentCard.photoUrl" [src]=currentCard.photoUrl/>
             <h2>{{currentCard?.userName ? currentCard.userName : currentCard?.cardOwnerEmail}}</h2>
         </div>
 
         <br>
 
-        <ul class="squares">
-            <template ngFor let-square="$implicit" [ngForOf]="squares | async">
+        <ul id="squares-list" class="squares">
+            <template ngFor let-square="$implicit" let-i="index" [ngForOf]="squares | async">
                 <li class='square' 
                 [ngClass]="square.fileUrl ? 'square-image' : ''" 
-                [style.background-image]="square.fileUrl ? 'url(' + square.fileUrl + ')' : ''"
-                >
+                [style.background-image]="square.fileUrl ? 'url(' + square.fileUrl + ')' : ''">
                     <span></span>
-                    <input type="file" name="file" id="{{ square.$key }}" class="inputfile" (change)="prepareToUploadPicture($event, square)"/>
-                    <label  *ngIf="!square.fileUrl" [attr.for]="square.$key">{{square.name}}</label>
-                    <p *ngIf="square.fileUrl" (click)="showImg(square.fileUrl, square)">{{square.name}}</p>
+                    <input [disabled]="!canUpload" type="file" name="file" id="{{ square.$key }}" class="inputfile" (change)="prepareToUploadPicture($event, square)"/>
+                    <label  *ngIf="!square.fileUrl && i != cardCenter" [attr.for]="square.$key">{{square.name}}</label>
+                    <p *ngIf="square.fileUrl && i != cardCenter" (click)="showImg(square.fileUrl, square)">{{square.name}}</p>
                     <img class="cell-img" *ngIf="!square.fileUrl && square.uploading === true" src="../../assets/img/loading.gif">
+                    <p *ngIf="i == cardCenter">FREE</p>
                 </li>
             </template>
         </ul>

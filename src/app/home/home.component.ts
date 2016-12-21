@@ -59,16 +59,6 @@ export class HomeComponent {
   deleteGame(game: any, $event: any){
     $event.stopPropagation();
     //Delete any associated files
-    // var gameItems = this.af.database.list('/games/' + game.$key + '/cards', { preserveSnapshot: true});
-    // console.log(game);
-    // for (var key in game.items) {
-    //   var obj = game.items[key];
-    //   console.log("Deleting object:", obj);
-    //   if(obj.fileName){
-    //     firebase.storage().ref().child('images/' + obj.fileName).delete().then(snapshot => console.log('file deleted'));
-    //   }
-    // }
-    // this.games.remove(game.$key).then(_ => console.log('game deleted!'));
     var filesSub = this.af.database.list('/games/' + game.gameKey + '/files', { preserveSnapshot: true})
     .subscribe(snapshots=>{
       if(snapshots.length === 0){

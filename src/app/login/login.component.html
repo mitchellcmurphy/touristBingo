@@ -1,5 +1,12 @@
-<div> {{ (af.auth | async)?.uid }} </div>
+<!--<div> {{ (af.auth | async)?.uid }} </div>
 <div *ngIf="auth | async">You are logged in</div>
-<div *ngIf="!(auth | async)">Please log in</div>
-<button class="btn btn-primary" (click)=login()>Login With Google</button>
-<button class="btn btn-primary" (click)=loginFacebook()>Login With Facebook</button>
+<div *ngIf="!(auth | async)">Please log in</div>-->
+<div class="loginButtons">
+	<div class="loginButton" (click)=loginFacebook()>
+		<span>Login With Facebook</span>
+	</div>
+	<div class="loginButton" (click)=login()>
+		<span>Login With Google</span>
+	</div>
+	<br>
+</div>
