@@ -71,18 +71,6 @@ export class AppComponent {
     public af: AngularFire,
     private router: Router,
     private userService: UserService) {
-      // this.af.auth.subscribe(user => {
-      //     if(user) {
-      //       // user logged in
-      //       this.user = user;
-      //       console.log("Logged in", user);
-      //     }
-      //     else {
-      //       // user not logged in
-      //       this.user = {};
-      //       console.log("Not logged in");
-      //     }
-      // });
   }
 
   ngOnInit() {
